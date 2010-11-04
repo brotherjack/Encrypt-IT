@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Encrypt-IT</string>
+    <string name="FileNameLabel">File to Encrypt:</string>
+    <string name="BrowseButtonText">Browse</string>
+    <string name="EncryptSelectText">Encryption Method:</string>
+    <string name="EncryptItButtonText">Encrypt IT!</string>
+    <string-array name="EncryptSelectOptions">
+    	<item>AES</item>
+    	<item>Blowfish</item>
+    	<item>DES</item>
+    	<item>RC5</item>
+    	<item>RSA</item>
+    </string-array>
+</resources>

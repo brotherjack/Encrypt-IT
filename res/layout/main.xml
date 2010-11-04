@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+	<TextView
+		android:id="@+id/FileNameLbl"  
+	    android:layout_width="wrap_content" 
+	    android:layout_height="wrap_content" 
+	    android:text="@string/FileNameLabel"
+	    android:textSize="8pt"
+	    android:paddingTop="10dip"
+	    android:paddingBottom="20dip" />
+    <EditText
+    	android:id="@+id/FileNameEdit"
+    	android:layout_width="125dip"
+    	android:layout_height="wrap_content"
+    	android:layout_toRightOf="@+id/FileNameLbl"/>
+    <Button
+    	android:id="@+id/BrowseButton"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:text="@string/BrowseButtonText"
+    	android:layout_toRightOf="@+id/FileNameEdit"/>
+    <TextView
+    	android:id="@+id/EncryptSelectLbl"
+    	android:layout_height="wrap_content"
+    	android:layout_width="wrap_content"
+    	android:text="@string/EncryptSelectText"
+    	android:textSize="8pt"
+    	android:paddingTop="10dip"
+	    android:paddingBottom="20dip" 
+	    android:layout_below="@+id/FileNameLbl"/>	
+    <Spinner 
+    	android:id="@+id/EncryptSelect"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:layout_toRightOf="@+id/EncryptSelectLbl"
+    	android:layout_below="@+id/FileNameEdit"/>
+    <Button
+    	android:id="@+id/EncryptItButton"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:text="@string/EncryptItButtonText"
+    	android:layout_below="@+id/EncryptSelectLbl"/>		
+</RelativeLayout>
