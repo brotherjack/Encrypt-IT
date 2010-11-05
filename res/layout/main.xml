@@ -41,5 +41,14 @@
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
     	android:text="@string/EncryptItButtonText"
-    	android:layout_below="@+id/EncryptSelectLbl"/>		
+    	android:layout_below="@+id/SeedLbl"/>
+    <TextView
+    	android:id="@+id/SeedLabel"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:text="@string/SeedText"
+    	android:layout_below="@+id/EncryptSelectLbl"
+    	android:textSize="8pt"
+	    android:paddingTop="10dip"
+	    android:paddingBottom="20dip" />			
 </RelativeLayout>

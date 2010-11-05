@@ -32,9 +32,9 @@ public class EncryptActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        EditText fileNameEdit = (EditText) findViewById(R.id.FileNameEdit);
+        final EditText fileNameEdit = (EditText) findViewById(R.id.FileNameEdit);
         Button browseButton = (Button) findViewById(R.id.BrowseButton);
-        Spinner EncryptionSelect = (Spinner) findViewById(R.id.EncryptSelect);
+        final Spinner EncryptionSelect = (Spinner) findViewById(R.id.EncryptSelect);
         Button EncryptItButton = (Button) findViewById(R.id.EncryptItButton);
         
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.EncryptSelectOptions, 
@@ -43,20 +43,20 @@ public class EncryptActivity extends Activity {
         EncryptionSelect.setAdapter(spinnerAdapter);
         
         final Context encrytStringActivity = this;
-        final String encryptionType = EncryptionSelect.getSelectedItem().toString();
+        
         EncryptItButton.setOnClickListener(new OnClickListener(){
           @Override
           public void onClick(View encryptView) {
-            String result = encryptString(encryptionType);
+            String fileName = fileNameEdit.getEditableText().toString();
+            String encryptionType = EncryptionSelect.getSelectedItem().toString();
+            
+            String result = encryptString(encryptionType, encryption);
             Toast.makeText(encrytStringActivity, result, Toast.LENGTH_LONG).show();
           }
         });
     }
     
-    private String encryptString(String encryptionType){
-      String seed = "This is whatever passphrase is used to protect this content.";
-      String plainText = "It's a secret to everybody (not)";
-      
+    private File encryptString(String encryptionType, String algorithm, String fileToEcrypt, String seed){
       String result = " ";
       
       try{

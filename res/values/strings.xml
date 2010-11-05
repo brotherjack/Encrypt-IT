@@ -5,6 +5,7 @@
     <string name="BrowseButtonText">Browse</string>
     <string name="EncryptSelectText">Encryption Method:</string>
     <string name="EncryptItButtonText">Encrypt IT!</string>
+    <string name="SeedText">Enter seed: </string>
     <string-array name="EncryptSelectOptions">
     	<item>AES</item>
     	<item>Blowfish</item>
