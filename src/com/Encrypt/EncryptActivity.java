@@ -1,9 +1,8 @@
 package com.Encrypt;
 
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.SecureRandomSpi;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -11,7 +10,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
 import android.app.Activity;
 import android.content.Context;
@@ -52,79 +50,55 @@ public class EncryptActivity extends Activity {
             String fileName = fileNameEdit.getEditableText().toString();
             String encryptionType = encryptionSelect.getSelectedItem().toString();
             String seed = seedEdit.getEditableText().toString();
-            
-            SecretKeySpec key = generateSecretKey(encryptionType, "SHA1PRNG",seed);
-            String encResult = encryptString(key, encryptionType, fileName, true);
-            String decResult = encryptString(key, encryptionType, encResult, false);
-            String result = "Original string is " + fileName + ".\nEncrypted string is " + encResult + ".\nDecrypted result is " + decResult + ".";
-            Toast.makeText(encryptStringActivity, result, Toast.LENGTH_LONG).show();
+            Cipher encCipher;
+            Cipher decCipher;
+            try{
+              SecretKey key = KeyGenerator.getInstance("DES").generateKey();
+              encCipher = Cipher.getInstance("DES");
+              decCipher = Cipher.getInstance("DES");
+              encCipher.init(Cipher.ENCRYPT_MODE, key);
+              decCipher.init(Cipher.DECRYPT_MODE, key);
+              byte[] encrypted = encryptString(fileName, encCipher);
+              String decrypted = decryptString(encrypted, decCipher);
+              Toast.makeText(encryptStringActivity, "This is the encrypted string " + encrypted.toString() +
+                  "\nThis is the decrypted string " + decrypted, Toast.LENGTH_SHORT).show();
+            } catch (NoSuchPaddingException e) {
+              Log.e(LOG_TAG, e.getMessage());
+            } catch (NoSuchAlgorithmException e) { 
+              Log.e(LOG_TAG, e.getMessage());
+            } catch (InvalidKeyException e) { 
+              Log.e(LOG_TAG, e.getMessage());
+            } 
           }
         });
     }
     
-    private SecretKeySpec generateSecretKey(String encryptionType, 
-                                        String algorithm, String seed){
-      byte[] rawKey = null;  
+    private byte[] encryptString(String toEncrypt, Cipher encCipher){
       try{
-          KeyGenerator keyGen = KeyGenerator.getInstance(encryptionType);
-        //Use SHA1 algorithm
-          SecureRandom secRand = SecureRandom.getInstance(algorithm);
-          secRand.setSeed(seed.getBytes());
-          
-          keyGen.init(128, secRand);
-          SecretKey key = keyGen.generateKey();
-          rawKey = key.getEncoded();
-          
-        } catch(NoSuchAlgorithmException nsae){
-          Log.e(LOG_TAG, "There is no algorithm that coresponds to " + encryptionType + ".");
-        }       
-        return new SecretKeySpec(rawKey, encryptionType);
-    }
-    
-    private String encryptString(SecretKeySpec skeySpec, String encryptionType, 
-        String fileToEncrypt, boolean encrypt){
-      String result = " ";
-      
-      try{
-        Cipher dCipher = Cipher.getInstance(encryptionType);
-        if(encrypt)
-          dCipher.init(Cipher.ENCRYPT_MODE, skeySpec);
-        else
-          dCipher.init(Cipher.DECRYPT_MODE, skeySpec);
-        
-        byte[] encrypted = dCipher.doFinal(fileToEncrypt.getBytes());
-        result = encrypted.toString();
-        
-      }catch(NoSuchAlgorithmException nsae){
-        Log.e(LOG_TAG, "There is no algorithm that coresponds to " + encryptionType + ".");
-      } catch(NoSuchPaddingException nspe){
-        Log.e(LOG_TAG, nspe.getMessage());
-      } catch(InvalidKeyException ike){
-        Log.e(LOG_TAG, ike.getMessage());
-      } catch(BadPaddingException bpe){
-        Log.e(LOG_TAG, bpe.getMessage());
-      } catch(IllegalBlockSizeException ibse){
-        Log.e(LOG_TAG, ibse.getMessage());
+        byte[] utf8 = toEncrypt.getBytes("UTF8");
+        byte[] enc = encCipher.doFinal(utf8);
+        return enc; 
+      } catch(BadPaddingException e){
+        Log.e(LOG_TAG, e.getMessage());
+      } catch(UnsupportedEncodingException e){
+        Log.e(LOG_TAG, e.getMessage());
+      } catch(IllegalBlockSizeException e){
+        Log.e(LOG_TAG, e.getMessage());
       }
-      
-      return result;
+      return null;
     }
     
-//    private String decryptString(String encryptionType, String algorithm, String fileToDecrypt){
-//      String result = " ";
-//      try{
-//        Secure
-//      }catch(NoSuchAlgorithmException nsae){
-//        Log.e(LOG_TAG, "There is no algorithm that coresponds to " + encryptionType + ".");
-//      } catch(NoSuchPaddingException nspe){
-//        Log.e(LOG_TAG, nspe.getMessage());
-//      } catch(InvalidKeyException ike){
-//        Log.e(LOG_TAG, ike.getMessage());
-//      } catch(BadPaddingException bpe){
-//        Log.e(LOG_TAG, bpe.getMessage());
-//      } catch(IllegalBlockSizeException ibse){
-//        Log.e(LOG_TAG, ibse.getMessage());
-//      }
-//      return result;
-//    }
+    private String decryptString(byte[] toDecrypt, Cipher decCipher){
+      try{
+        byte[] decrypt = decCipher.doFinal(toDecrypt);
+        return new String(decrypt, "UTF8");
+      } catch(BadPaddingException e){
+        Log.e(LOG_TAG, e.getMessage());
+      } catch(IllegalBlockSizeException e){
+        Log.e(LOG_TAG, e.getMessage());
+      } catch(UnsupportedEncodingException e){
+        Log.e(LOG_TAG, e.getMessage());
+      }
+      return null;
+    }
 }
