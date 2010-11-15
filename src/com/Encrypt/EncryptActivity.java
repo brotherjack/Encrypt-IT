@@ -53,14 +53,14 @@ public class EncryptActivity extends Activity {
             Cipher encCipher;
             Cipher decCipher;
             try{
-              SecretKey key = KeyGenerator.getInstance("DES").generateKey();
-              encCipher = Cipher.getInstance("DES");
-              decCipher = Cipher.getInstance("DES");
+              SecretKey key = KeyGenerator.getInstance(encryptionType).generateKey();
+              encCipher = Cipher.getInstance(encryptionType);
+              decCipher = Cipher.getInstance(encryptionType);
               encCipher.init(Cipher.ENCRYPT_MODE, key);
               decCipher.init(Cipher.DECRYPT_MODE, key);
               byte[] encrypted = encryptString(fileName, encCipher);
               String decrypted = decryptString(encrypted, decCipher);
-              Toast.makeText(encryptStringActivity, "This is the encrypted string " + encrypted.toString() +
+              Toast.makeText(encryptStringActivity, "This is the encrypted string " + new String(encrypted) +
                   "\nThis is the decrypted string " + decrypted, Toast.LENGTH_SHORT).show();
             } catch (NoSuchPaddingException e) {
               Log.e(LOG_TAG, e.getMessage());

@@ -8,9 +8,6 @@
     <string name="SeedText">Enter seed: </string>
     <string-array name="EncryptSelectOptions">
     	<item>AES</item>
-    	<item>Blowfish</item>
     	<item>DES</item>
-    	<item>RC5</item>
-    	<item>RSA</item>
     </string-array>
 </resources>
