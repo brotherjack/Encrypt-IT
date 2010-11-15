@@ -14,6 +14,8 @@
     	android:id="@+id/FileNameEdit"
     	android:layout_width="125dip"
     	android:layout_height="wrap_content"
+    	android:maxLines="1"
+    	android:scrollHorizontally="true"
     	android:layout_toRightOf="@+id/FileNameLbl"/>
     <Button
     	android:id="@+id/BrowseButton"
@@ -55,6 +57,8 @@
 		android:id="@+id/seedEdit"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
+		android:maxLines="1"
+    	android:scrollHorizontally="true"
 		android:layout_toRightOf="@+id/SeedLbl"
 		android:layout_below="@+id/EncryptSelect"/>    			
 </RelativeLayout>
