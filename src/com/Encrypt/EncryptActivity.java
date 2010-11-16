@@ -18,9 +18,7 @@ public class EncryptActivity extends Activity {
        
         Button encryptStringButton = (Button) findViewById(R.id.EncryptStringButton);
         Button encryptFileButton = (Button) findViewById(R.id.EncryptFileButton);
-        
-        final Context encryptStringActivity = this;
-        
+       
         encryptStringButton.setOnClickListener(new OnClickListener(){
           @Override
           public void onClick(View encryptView) {
