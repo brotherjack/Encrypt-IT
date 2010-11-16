@@ -28,5 +28,13 @@ public class EncryptActivity extends Activity {
             startActivity(encStrIntent);
           }
         });
+        
+        encryptFileButton.setOnClickListener(new OnClickListener(){
+          @Override
+          public void onClick(View v) {
+            Intent encFileIntent = new Intent(EncryptActivity.this, EncryptFileActivity.class);
+            startActivity(encFileIntent);
+          }
+        });
     }
 }

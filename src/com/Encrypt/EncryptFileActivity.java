@@ -23,15 +23,15 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-public class EncryptStringActivity extends Activity {
-    private static final String LOG_TAG = EncryptStringActivity.class.getName();
+public class EncryptFileActivity extends Activity {
+    private static final String LOG_TAG = EncryptFileActivity.class.getName();
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.encrypt_string);
+        setContentView(R.layout.encrypt_file);
         
-        final EditText stringEdit = (EditText) findViewById(R.id.StringEdit);
+        final EditText fileNameEdit = (EditText) findViewById(R.id.FileNameEdit);
         final Spinner encryptionSelect = (Spinner) findViewById(R.id.EncryptSelect);
         Button encryptItButton = (Button) findViewById(R.id.EncryptItButton);
         final EditText seedEdit = (EditText) findViewById(R.id.seedEdit);
@@ -41,26 +41,21 @@ public class EncryptStringActivity extends Activity {
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         encryptionSelect.setAdapter(spinnerAdapter);
         
-        final Context encryptStringActivity = this;
+        final Context encryptFileActivity = this;
         
         encryptItButton.setOnClickListener(new OnClickListener(){
           @Override
           public void onClick(View encryptView) {
-            String fileName = stringEdit.getEditableText().toString();
+            String fileName = fileNameEdit.getEditableText().toString();
             String encryptionType = encryptionSelect.getSelectedItem().toString();
             String seed = seedEdit.getEditableText().toString();
-            Cipher encCipher;
-            Cipher decCipher;
+            Cipher encCipher = null;
+            Cipher decCipher = null;
             try{
               SecretKey key = KeyGenerator.getInstance(encryptionType).generateKey();
               encCipher = Cipher.getInstance(encryptionType);
-              decCipher = Cipher.getInstance(encryptionType);
               encCipher.init(Cipher.ENCRYPT_MODE, key);
               decCipher.init(Cipher.DECRYPT_MODE, key);
-              byte[] encrypted = encryptString(fileName, encCipher);
-              String decrypted = decryptString(encrypted, decCipher);
-              Toast.makeText(encryptStringActivity, "This is the encrypted string " + new String(encrypted) +
-                  "\nThis is the decrypted string " + decrypted, Toast.LENGTH_SHORT).show();
             } catch (NoSuchPaddingException e) {
               Log.e(LOG_TAG, e.getMessage());
             } catch (NoSuchAlgorithmException e) { 
@@ -72,7 +67,7 @@ public class EncryptStringActivity extends Activity {
         });
     }
     
-    private byte[] encryptString(String toEncrypt, Cipher encCipher){
+    private byte[] encryptFile(String toEncrypt, Cipher encCipher){
       try{
         byte[] utf8 = toEncrypt.getBytes("UTF8");
         byte[] enc = encCipher.doFinal(utf8);
@@ -82,20 +77,6 @@ public class EncryptStringActivity extends Activity {
       } catch(UnsupportedEncodingException e){
         Log.e(LOG_TAG, e.getMessage());
       } catch(IllegalBlockSizeException e){
-        Log.e(LOG_TAG, e.getMessage());
-      }
-      return null;
-    }
-    
-    private String decryptString(byte[] toDecrypt, Cipher decCipher){
-      try{
-        byte[] decrypt = decCipher.doFinal(toDecrypt);
-        return new String(decrypt, "UTF8");
-      } catch(BadPaddingException e){
-        Log.e(LOG_TAG, e.getMessage());
-      } catch(IllegalBlockSizeException e){
-        Log.e(LOG_TAG, e.getMessage());
-      } catch(UnsupportedEncodingException e){
         Log.e(LOG_TAG, e.getMessage());
       }
       return null;
