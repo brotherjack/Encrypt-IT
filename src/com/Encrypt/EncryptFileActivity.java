@@ -1,5 +1,9 @@
 package com.Encrypt;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -55,7 +59,8 @@ public class EncryptFileActivity extends Activity {
               SecretKey key = KeyGenerator.getInstance(encryptionType).generateKey();
               encCipher = Cipher.getInstance(encryptionType);
               encCipher.init(Cipher.ENCRYPT_MODE, key);
-              decCipher.init(Cipher.DECRYPT_MODE, key);
+              encryptFile(fileName, "/mnt/sdcard/test.enc", encCipher);
+              //decCipher.init(Cipher.DECRYPT_MODE, key);
             } catch (NoSuchPaddingException e) {
               Log.e(LOG_TAG, e.getMessage());
             } catch (NoSuchAlgorithmException e) { 
@@ -67,18 +72,57 @@ public class EncryptFileActivity extends Activity {
         });
     }
     
-    private byte[] encryptFile(String toEncrypt, Cipher encCipher){
+    private void encryptFile(String fileInName, String fileOutName, Cipher encCipher){
+      FileInputStream fileReadStream = null;
+      FileOutputStream fileWriteStream = null;
       try{
-        byte[] utf8 = toEncrypt.getBytes("UTF8");
-        byte[] enc = encCipher.doFinal(utf8);
-        return enc; 
+        fileReadStream = new FileInputStream("/mnt/sdcard/" + fileInName);
+        fileWriteStream = new FileOutputStream(new File(fileOutName));
+        
+        long fileLen = fileInName.length();
+        //if(fileLen > Integer.MAX_VALUE) return null; //Replace with custom exception
+        byte[] fileBytes = new byte[(int)fileLen];
+        
+        int offset = 0;
+        int read = 0;
+        while(offset < fileBytes.length 
+         && (read=fileReadStream.read(fileBytes, offset, fileBytes.length-offset)) >= 0){
+          offset += read;
+        }
+        
+        if (offset < fileBytes.length) {
+          throw new IOException("Could not completely read file "+ fileInName);
+        }
+        
+        byte[] enc = encCipher.doFinal(fileBytes);
+        fileWriteStream.write(enc);
+        
+        Toast.makeText(this, "Encrypted \'" + fileInName + "\'.", Toast.LENGTH_SHORT);
       } catch(BadPaddingException e){
         Log.e(LOG_TAG, e.getMessage());
       } catch(UnsupportedEncodingException e){
         Log.e(LOG_TAG, e.getMessage());
       } catch(IllegalBlockSizeException e){
         Log.e(LOG_TAG, e.getMessage());
+      } catch(IOException ioe){
+        Log.e(LOG_TAG, ioe.getMessage());
+        Toast.makeText(this, "Was unable to encrypt file \'" + fileInName + "\'.", 
+            Toast.LENGTH_SHORT);
+      } finally{
+        if (fileReadStream != null){
+          try {
+            fileReadStream.close();
+          } catch (IOException e) {
+            Log.e(LOG_TAG, e.getMessage());
+          }
+        }
+        if (fileWriteStream != null){
+          try {
+            fileWriteStream.close();
+          } catch (IOException e) {
+            Log.e(LOG_TAG, e.getMessage());
+          }
+        }
       }
-      return null;
     }
 }
