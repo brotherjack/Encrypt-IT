@@ -24,6 +24,30 @@
     	android:text="@string/BrowseButtonLabel"
     	android:layout_toRightOf="@+id/FileNameEdit"/>	
     <TextView
+		android:id="@+id/KeyNameLbl"  
+	    android:layout_width="wrap_content" 
+	    android:layout_height="wrap_content" 
+	    android:text="@string/KeyNameLabel"
+	    android:textSize="8pt"
+	    android:paddingTop="10dip"
+	    android:paddingBottom="20dip" 
+	    android:layout_below="@+id/FileNameLbl"/>
+    <EditText
+    	android:id="@+id/KeyNameEdit"
+    	android:layout_width="160dip"
+    	android:layout_height="wrap_content"
+    	android:maxLines="1"
+    	android:scrollHorizontally="true"
+    	android:layout_toRightOf="@+id/KeyNameLbl"
+    	android:layout_below="@+id/FileNameEdit"/>
+    <Button 
+    	android:id="@+id/BrowseKeyButton"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:text="@string/BrowseButtonLabel"
+    	android:layout_toRightOf="@+id/KeyNameEdit"
+    	android:layout_below="@+id/BrowseButton"/>
+    <TextView
     	android:id="@+id/EncryptSelectLbl"
     	android:layout_height="wrap_content"
     	android:layout_width="wrap_content"
@@ -31,34 +55,17 @@
     	android:textSize="8pt"
     	android:paddingTop="10dip"
 	    android:paddingBottom="20dip" 
-	    android:layout_below="@+id/FileNameLbl"/>	
+	    android:layout_below="@+id/KeyNameLbl"/>	
     <Spinner 
     	android:id="@+id/EncryptSelect"
     	android:layout_width="fill_parent"
     	android:layout_height="wrap_content"
     	android:layout_toRightOf="@+id/EncryptSelectLbl"
-    	android:layout_below="@+id/FileNameEdit"/>
+    	android:layout_below="@+id/KeyNameEdit"/>
     <Button
-    	android:id="@+id/EncryptItButton"
+    	android:id="@+id/DecryptItButton"
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
-    	android:text="@string/EncryptItButtonText"
-    	android:layout_below="@+id/SeedLbl"/>
-    <TextView
-    	android:id="@+id/SeedLbl"
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-    	android:text="@string/SeedText"
-    	android:layout_below="@+id/EncryptSelectLbl"
-    	android:textSize="8pt"
-	    android:paddingTop="10dip"
-	    android:paddingBottom="20dip" />
-	<EditText
-		android:id="@+id/seedEdit"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:maxLines="1"
-    	android:scrollHorizontally="true"
-		android:layout_toRightOf="@+id/SeedLbl"
-		android:layout_below="@+id/EncryptSelect"/>    			
+    	android:text="@string/DecryptItButtonText"
+    	android:layout_below="@+id/EncryptSelectLbl"/>
 </RelativeLayout>

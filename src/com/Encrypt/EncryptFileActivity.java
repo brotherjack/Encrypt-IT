@@ -40,7 +40,6 @@ public class EncryptFileActivity extends Activity {
         final EditText fileNameEdit = (EditText) findViewById(R.id.FileNameEdit);
         final Spinner encryptionSelect = (Spinner) findViewById(R.id.EncryptSelect);
         Button encryptItButton = (Button) findViewById(R.id.EncryptItButton);
-        Button decryptItButton = (Button) findViewById(R.id.DecryptItButton);
         final EditText seedEdit = (EditText) findViewById(R.id.seedEdit);
         
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.EncryptSelectOptions, 
@@ -56,9 +55,8 @@ public class EncryptFileActivity extends Activity {
             String fileName = fileNameEdit.getEditableText().toString();
             String encryptionType = encryptionSelect.getSelectedItem().toString();
             String seed = seedEdit.getEditableText().toString();
-            Cipher encCipher = null;
+
             try{
-              //SecretKey key = KeyGenerator.getInstance(encryptionType).generateKey();
               SecretKeySpec key = makeKey("/mnt/sdcard/usefulcmds.txt", seed);
               if(key == null) 
                 throw new KeyGenerationFailureException("Was unable to generate a key!");
@@ -70,55 +68,6 @@ public class EncryptFileActivity extends Activity {
               Log.e(LOG_TAG, e.getMessage());
               Toast.makeText(encryptFileActivity, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
-          }
-        });
-        
-        decryptItButton.setOnClickListener(new OnClickListener(){
-          @Override
-          public void onClick(View encryptView) {
-            String fileName = fileNameEdit.getEditableText().toString();
-            String encryptionType = encryptionSelect.getSelectedItem().toString();
-            String seed = seedEdit.getEditableText().toString();
-            Cipher decCipher = null;
-            try{
-              
-              decCipher = Cipher.getInstance(encryptionType);
-              SecretKeySpec key = getKey("/mnt/sdcard/usefulcmds.txt.key"); 
-              decCipher.init(Cipher.DECRYPT_MODE, key);
-            
-              File fileIn = new File("/mnt/sdcard/usefulcmds.enc");
-              /*if(fileIn.length() > Integer.MAX_VALUE) 
-                throw new FileTooBigException("File\'/mnt/sdcard/usefulcmds.enc\' is too large too encrypt.");*/
-              
-              FileInputStream input = new FileInputStream(fileIn);
-              byte[] encrypted = new byte[(int)fileIn.length()];
-              input.read(encrypted);
-              
-              byte[] decrypt = decCipher.doFinal(encrypted);
-              
-              FileOutputStream output = new FileOutputStream(new File("/mnt/sdcard/decrypted.txt"));
-              output.write(decrypt);
-              
-              Toast.makeText(encryptFileActivity, "Decrypted \'decrypted.txt\'.", Toast.LENGTH_SHORT).show();
-              //encryptFile("test.enc", "/mnt/sdcard/test", decCipher);
-              //decCipher.init(Cipher.DECRYPT_MODE, key);
-            } catch (NoSuchPaddingException e) {
-              Log.e(LOG_TAG, e.getMessage());
-            } catch (NoSuchAlgorithmException e) { 
-              Log.e(LOG_TAG, e.getMessage());
-            } catch (InvalidKeyException e) { 
-              Log.e(LOG_TAG, e.getMessage());
-            } catch (IllegalBlockSizeException e) {
-              Log.e(LOG_TAG, e.getMessage());
-            } catch (BadPaddingException e) {
-              Log.e(LOG_TAG, e.getMessage());
-            } catch (FileNotFoundException e) {
-              // TODO Auto-generated catch block
-              e.printStackTrace();
-            } catch (IOException e) {
-              // TODO Auto-generated catch block
-              e.printStackTrace();
-            } 
           }
         });
     }
@@ -147,28 +96,16 @@ public class EncryptFileActivity extends Activity {
     }
     
     private void saveKey(SecretKeySpec key, String fileName){
-      //FileInputStream input = null;
       FileOutputStream output = null;
       try{
-        //File fileIn = new File(fileName);
         File fileOut = new File(fileName+".key");
-        //input = new FileInputStream(fileIn);
-        output = new FileOutputStream(fileOut);
-        //byte[] bytes = new byte[(int)fileIn.length()];
         
-        /*while(input.read() != -1){
-          output.write(bytes);
-        }*/
+        output = new FileOutputStream(fileOut);
+        
         output.write(key.getEncoded());
       } catch(IOException e){
         Log.e(LOG_TAG, e.getMessage());
       } finally{
-        /*if(input != null) try {
-          input.close();
-        } catch (IOException e) {
-          Log.e(LOG_TAG, "Cannot close input stream!");
-          e.printStackTrace();
-        }*/
         if(output != null) try {
           output.close();
         } catch (IOException e) {
@@ -176,32 +113,6 @@ public class EncryptFileActivity extends Activity {
           e.printStackTrace();
         }
       }
-    }
-    
-    private SecretKeySpec getKey(String fileName){
-      FileInputStream input = null;
-      
-      try{
-        File fileIn = new File(fileName);
-        
-        input = new FileInputStream(fileIn);
-        
-        byte[] bytes = new byte[(int)fileIn.length()];
-        while(input.read(bytes) != -1){
-          continue;
-        }
-        return new SecretKeySpec(bytes, "AES");
-      } catch(IOException e){
-        Log.e(LOG_TAG, e.getMessage());
-      } finally{
-        if(input != null) try {
-          input.close();
-        } catch (IOException e) {
-          Log.e(LOG_TAG, "Cannot close input stream!");
-          e.printStackTrace();
-        }
-      }
-      return null;
     }
     
     private void encryptFile(String fileInName, String fileOutName, 

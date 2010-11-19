@@ -21,8 +21,16 @@
             </intent-filter>
         </activity>
         
-		<activity android:name=".EncryptFileActivity"
-                  android:label="@string/EncryptDecryptFile">
+        <activity android:name=".EncryptFileActivity"
+                  android:label="@string/EncryptFile">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
+		<activity android:name=".DecryptFileActivity"
+                  android:label="@string/DecryptFile">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_VIEW" />
 				<category android:name="android.intent.category.DEFAULT" />
@@ -30,6 +38,5 @@
         </activity>
 		
     </application>
-
 
 </manifest> 

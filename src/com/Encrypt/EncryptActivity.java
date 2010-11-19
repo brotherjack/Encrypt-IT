@@ -18,6 +18,7 @@ public class EncryptActivity extends Activity {
        
         Button encryptStringButton = (Button) findViewById(R.id.EncryptStringButton);
         Button encryptFileButton = (Button) findViewById(R.id.EncryptFileButton);
+        Button decryptFileButton = (Button) findViewById(R.id.DecryptFileButton);
        
         encryptStringButton.setOnClickListener(new OnClickListener(){
           @Override
@@ -32,6 +33,14 @@ public class EncryptActivity extends Activity {
           public void onClick(View v) {
             Intent encFileIntent = new Intent(EncryptActivity.this, EncryptFileActivity.class);
             startActivity(encFileIntent);
+          }
+        });
+        
+        decryptFileButton.setOnClickListener(new OnClickListener(){
+          @Override
+          public void onClick(View v) {
+            Intent decFileIntent = new Intent(EncryptActivity.this, DecryptFileActivity.class);
+            startActivity(decFileIntent);
           }
         });
     }
