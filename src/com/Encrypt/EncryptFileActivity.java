@@ -2,7 +2,6 @@ package com.Encrypt;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -20,6 +19,7 @@ import javax.crypto.spec.SecretKeySpec;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -57,7 +57,10 @@ public class EncryptFileActivity extends Activity {
             String seed = seedEdit.getEditableText().toString();
 
             try{
-              SecretKeySpec key = makeKey("/mnt/sdcard/usefulcmds.txt", seed);
+              File keyDir = new File(
+                  Environment.getExternalStorageDirectory().toString() + "/keyDirectory");
+              keyDir.mkdirs();
+              SecretKeySpec key = makeKey(keyDir.toString(), seed);
               if(key == null) 
                 throw new KeyGenerationFailureException("Was unable to generate a key!");
               else
