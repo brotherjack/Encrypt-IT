@@ -94,7 +94,5 @@ public class EncryptActivity extends Activity {
       edit.commit();
       
       setRanForFirstTime();
-      
-      Toast.makeText(this, "Program has run for first time!", Toast.LENGTH_SHORT).show();
     }
 }

@@ -9,6 +9,7 @@ import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Random;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -18,8 +19,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,6 +32,7 @@ import android.widget.Toast;
 
 public class EncryptFileActivity extends Activity {
     private static final String LOG_TAG = EncryptFileActivity.class.getName();
+    private static SharedPreferences mPreferences;
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,21 +57,39 @@ public class EncryptFileActivity extends Activity {
             String fileName = fileNameEdit.getEditableText().toString();
             String encryptionType = encryptionSelect.getSelectedItem().toString();
             String seed = seedEdit.getEditableText().toString();
-
+            
+            Context thisContext = encryptFileActivity.getApplicationContext();
+            mPreferences = thisContext.getSharedPreferences("User Preferences", 0);
+            
             try{
-              File keyDir = new File(
-                  Environment.getExternalStorageDirectory().toString() + "/Encrypt-IT/keyDirectory");
-              keyDir.mkdirs();
-              SecretKeySpec key = makeKey(keyDir.toString(), seed);
-              if(key == null) 
-                throw new KeyGenerationFailureException("Was unable to generate a key!");
-              else
-                saveKey(key, "/mnt/sdcard/usefulcmds.txt");
+              String keyDir = mPreferences.getString("keyDir", null);
+              String decryptedDir = mPreferences.getString("decryptedDir", null);
               
-              encryptFile("/mnt/sdcard/usefulcmds.txt", "/mnt/sdcard/usefulcmds.enc", encryptionType, key);
-            } catch(KeyGenerationFailureException e) {
-              Log.e(LOG_TAG, e.getMessage());
-              Toast.makeText(encryptFileActivity, e.getMessage(), Toast.LENGTH_SHORT).show();
+              String fileIn = "/mnt/sdcard/usefulcmds.txt";
+              String fileOut = decryptedDir + "/" + fileName;
+              String keyFileName = keyDir + "/" + fileName;
+              
+              if((keyDir == null) || (decryptedDir == null)){
+                throw new KeyGenFailException(KeyGenFailException.failureTypes.DATABASE_ERROR);
+              } 
+              
+              SecretKeySpec key = makeKey(keyFileName, seed);
+              if(key == null) 
+                throw new KeyGenFailException(KeyGenFailException.failureTypes.KEY_NULL);
+              else
+                saveKey(key, keyFileName);
+              
+              encryptFile(fileIn, fileOut, keyFileName, key);
+            } catch(KeyGenFailException e) {
+              String msg = null;
+              if(e.fail == KeyGenFailException.failureTypes.KEY_NULL){
+                msg =  "Was unable to generate a key!";
+              }
+              if(e.fail == KeyGenFailException.failureTypes.DATABASE_ERROR){
+                msg = "Corrupted value for directory in databse.";
+              }
+              Log.e(LOG_TAG, msg);
+              Toast.makeText(encryptFileActivity, msg, Toast.LENGTH_SHORT).show();
             }
           }
         });
@@ -183,10 +203,14 @@ public class EncryptFileActivity extends Activity {
       }
     }
     
-    private class KeyGenerationFailureException extends Exception{
+    private static class KeyGenFailException extends Exception{
       static final long serialVersionUID = 1878;
-      KeyGenerationFailureException(String msg){
-        super(msg);
+      public enum failureTypes{
+        KEY_NULL, DATABASE_ERROR 
+      }
+      private failureTypes fail;
+      KeyGenFailException(failureTypes failureType){
+        fail = failureType;       
       }
     }
 }
