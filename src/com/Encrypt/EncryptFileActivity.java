@@ -58,7 +58,7 @@ public class EncryptFileActivity extends Activity {
 
             try{
               File keyDir = new File(
-                  Environment.getExternalStorageDirectory().toString() + "/keyDirectory");
+                  Environment.getExternalStorageDirectory().toString() + "/Encrypt-IT/keyDirectory");
               keyDir.mkdirs();
               SecretKeySpec key = makeKey(keyDir.toString(), seed);
               if(key == null) 
