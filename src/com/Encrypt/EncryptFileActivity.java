@@ -63,15 +63,17 @@ public class EncryptFileActivity extends Activity {
             
             try{
               String keyDir = mPreferences.getString("keyDir", null);
-              String decryptedDir = mPreferences.getString("decryptedDir", null);
+              String encryptedDir = mPreferences.getString("encryptedDir", null);
+              
+              if((keyDir == null) || (encryptedDir == null)){
+                throw new KeyGenFailException(KeyGenFailException.failureTypes.DATABASE_ERROR);
+              } else if(fileName.compareTo("") == 0){
+                throw new KeyGenFailException(KeyGenFailException.failureTypes.EMPTY_FIELD);
+              }
               
               String fileIn = "/mnt/sdcard/usefulcmds.txt";
-              String fileOut = decryptedDir + "/" + fileName;
+              String fileOut = encryptedDir + "/" + fileName;
               String keyFileName = keyDir + "/" + fileName;
-              
-              if((keyDir == null) || (decryptedDir == null)){
-                throw new KeyGenFailException(KeyGenFailException.failureTypes.DATABASE_ERROR);
-              } 
               
               SecretKeySpec key = makeKey(keyFileName, seed);
               if(key == null) 
@@ -79,17 +81,23 @@ public class EncryptFileActivity extends Activity {
               else
                 saveKey(key, keyFileName);
               
-              encryptFile(fileIn, fileOut, keyFileName, key);
+              encryptFile(fileIn, fileOut, encryptionType, key);
             } catch(KeyGenFailException e) {
               String msg = null;
               if(e.fail == KeyGenFailException.failureTypes.KEY_NULL){
                 msg =  "Was unable to generate a key!";
+                Log.e(LOG_TAG, msg);
+                Toast.makeText(encryptFileActivity, msg, Toast.LENGTH_SHORT).show();
               }
               if(e.fail == KeyGenFailException.failureTypes.DATABASE_ERROR){
                 msg = "Corrupted value for directory in databse.";
+                Log.e(LOG_TAG, msg);
+                Toast.makeText(encryptFileActivity, msg, Toast.LENGTH_SHORT).show();
               }
-              Log.e(LOG_TAG, msg);
-              Toast.makeText(encryptFileActivity, msg, Toast.LENGTH_SHORT).show();
+              if(e.fail == KeyGenFailException.failureTypes.EMPTY_FIELD){
+                msg = "Please enter a file name to encrypt.";
+                Toast.makeText(encryptFileActivity, msg, Toast.LENGTH_SHORT).show();
+              }
             }
           }
         });
@@ -156,7 +164,7 @@ public class EncryptFileActivity extends Activity {
         
         byte[] encrypted = encCipher.doFinal(plainText);
         
-        output = new FileOutputStream(new File(fileOutName));
+        output = new FileOutputStream(new File(fileOutName+".enc"));
         output.write(encrypted);
 
         Toast.makeText(this, "Encrypted \'" + fileInName + "\'.", Toast.LENGTH_SHORT).show();
@@ -206,7 +214,7 @@ public class EncryptFileActivity extends Activity {
     private static class KeyGenFailException extends Exception{
       static final long serialVersionUID = 1878;
       public enum failureTypes{
-        KEY_NULL, DATABASE_ERROR 
+        KEY_NULL, DATABASE_ERROR, EMPTY_FIELD 
       }
       private failureTypes fail;
       KeyGenFailException(failureTypes failureType){
