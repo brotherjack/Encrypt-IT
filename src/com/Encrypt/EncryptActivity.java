@@ -75,6 +75,11 @@ public class EncryptActivity extends Activity {
       //Build directories for encrypted files, decrypted files, and keys
       SharedPreferences.Editor edit = mPreferences.edit();
       
+      File rootDir = new File(
+          Environment.getExternalStorageDirectory().toString() + "/Encrypt-IT");
+      rootDir.mkdirs();
+      edit.putString("rootDir", rootDir.getAbsolutePath());
+      
       File encryptedDir = new File(
           Environment.getExternalStorageDirectory().toString() + "/Encrypt-IT/EncryptedFiles");
       encryptedDir.mkdirs();

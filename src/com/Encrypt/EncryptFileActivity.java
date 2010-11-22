@@ -9,7 +9,6 @@ import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Random;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -19,6 +18,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +33,8 @@ import android.widget.Toast;
 public class EncryptFileActivity extends Activity {
     private static final String LOG_TAG = EncryptFileActivity.class.getName();
     private static SharedPreferences mPreferences;
+    private static final int RETURN_FILE_TO_LOAD = 83;
+    
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class EncryptFileActivity extends Activity {
         
         final EditText fileNameEdit = (EditText) findViewById(R.id.FileNameEdit);
         final Spinner encryptionSelect = (Spinner) findViewById(R.id.EncryptSelect);
+        Button browseButton = (Button) findViewById(R.id.BrowseButton);
         Button encryptItButton = (Button) findViewById(R.id.EncryptItButton);
         final EditText seedEdit = (EditText) findViewById(R.id.seedEdit);
         
@@ -99,6 +102,15 @@ public class EncryptFileActivity extends Activity {
                 Toast.makeText(encryptFileActivity, msg, Toast.LENGTH_SHORT).show();
               }
             }
+          }
+        });
+        
+        browseButton.setOnClickListener(new OnClickListener(){
+          @Override
+          public void onClick(View encryptView) {
+            Intent fileViewIntent = new Intent(EncryptFileActivity.this, 
+                FileListActivity.class);
+            startActivityForResult(fileViewIntent, RETURN_FILE_TO_LOAD);
           }
         });
     }
