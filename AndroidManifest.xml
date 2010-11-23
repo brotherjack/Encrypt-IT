@@ -36,6 +36,14 @@
 				<category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        
+        <activity android:name=".FileListActivity"
+                  android:label="@string/FileList">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 		
     </application>
 
