@@ -10,10 +10,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.Toast;
 
 public class EncryptActivity extends Activity {
   private static final String LOG_TAG = EncryptActivity.class.getName();
@@ -28,6 +28,7 @@ public class EncryptActivity extends Activity {
     setContentView(R.layout.main);
 
     if (mPreferences == null) {
+      Log.i(LOG_TAG, "First Run: Setting up preferences for phone.");
       firstRunPreferences();
     }
 
@@ -85,23 +86,19 @@ public class EncryptActivity extends Activity {
     // Build directories for encrypted files, decrypted files, and keys
     SharedPreferences.Editor edit = mPreferences.edit();
 
-    File rootDir =
-        new File(AUTHORITY);
+    File rootDir = new File(AUTHORITY);
     rootDir.mkdirs();
     edit.putString("rootDir", rootDir.getAbsolutePath());
 
-    File encryptedDir =
-        new File(AUTHORITY + "EncryptedFiles");
+    File encryptedDir = new File(AUTHORITY + "EncryptedFiles");
     encryptedDir.mkdirs();
     edit.putString("encryptedDir", encryptedDir.getAbsolutePath());
 
-    File decryptedDir =
-        new File(AUTHORITY + "DecryptedFiles");
+    File decryptedDir = new File(AUTHORITY + "DecryptedFiles");
     decryptedDir.mkdirs();
     edit.putString("decryptedDir", decryptedDir.getAbsolutePath());
 
-    File keyDir =
-        new File(AUTHORITY + "Keys");
+    File keyDir = new File(AUTHORITY + "Keys");
     keyDir.mkdirs();
     edit.putString("keyDir", keyDir.getAbsolutePath());
 

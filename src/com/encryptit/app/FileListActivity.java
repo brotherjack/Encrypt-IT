@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.regex.*;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -13,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -37,7 +37,9 @@ public class FileListActivity extends ListActivity {
   private static final String PHONE_ROOT =
       Environment.getExternalStorageDirectory().toString();
   private final String LOG_TAG = FileListActivity.class.getName();
+  private final String SELECTED_PATH = "selected.path";
   private final String LOADING_INTENT_KEY = "callingActivity";
+  
   private static SharedPreferences mPreferences = null;
 
   /**
@@ -78,6 +80,9 @@ public class FileListActivity extends ListActivity {
                 "Cannot access files outside of sdcard root!",
                 Toast.LENGTH_SHORT).show();
           } else {
+            //Strip trailing backspace character
+            mCurrentDir = mCurrentDir.substring(0, mCurrentDir.length()-1);
+            
             // Compile and match directory to the last directory on path
             Pattern pattern = Pattern.compile("/[a-zA-Z0-9-]*$");
             Matcher matcher = pattern.matcher(mCurrentDir);
@@ -87,23 +92,25 @@ public class FileListActivity extends ListActivity {
             mCurrentDir = (String) mCurrentDir.substring(0, matcher.start());
 
             loadDir(mCurrentDir);
+            Log.i(LOG_TAG, "Working directory for Encrpt-It is " + mCurrentDir);
 
             mFileListAct.setListAdapter(new ArrayAdapter<String>(mFileListAct,
                 android.R.layout.simple_list_item_1, mCardContents));
             view.invalidate();
           }
-        } else if(selected.isDirectory()) {
+        } else if (selected.isDirectory()) {
           mCurrentDir = mCurrentDir.concat(mSelected.concat("/"));
-          
+
           loadDir(mCurrentDir);
-          
+          Log.i(LOG_TAG, "Working directory for Encrpt-It is " + mCurrentDir);
+
           mFileListAct.setListAdapter(new ArrayAdapter<String>(mFileListAct,
               android.R.layout.simple_list_item_1, mCardContents));
           view.invalidate();
-          
+
         } else {
           Bundle fileNameBundle = new Bundle();
-          fileNameBundle.putString("selected_file", mSelected);
+          fileNameBundle.putString(SELECTED_PATH, mCurrentDir + "/" + mSelected);
 
           Intent sendFileToBrowser =
               new Intent(FileListActivity.this, callingActivity.getClass());
