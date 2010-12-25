@@ -71,7 +71,7 @@ public class FileListActivity extends ListActivity {
           long id) {
         mSelected = (String) parent.getItemAtPosition(position); // selected
         // item
-        File selected = new File(mSelected);
+        File selected = new File(mCurrentDir.concat(mSelected));
         if (mSelected.contentEquals("..")) {
           if (mCurrentDir.contentEquals(PHONE_ROOT)) {
             Toast.makeText(mFileListAct,
@@ -88,11 +88,19 @@ public class FileListActivity extends ListActivity {
 
             loadDir(mCurrentDir);
 
-            // mSelected.matches();
             mFileListAct.setListAdapter(new ArrayAdapter<String>(mFileListAct,
                 android.R.layout.simple_list_item_1, mCardContents));
             view.invalidate();
           }
+        } else if(selected.isDirectory()) {
+          mCurrentDir = mCurrentDir.concat(mSelected.concat("/"));
+          
+          loadDir(mCurrentDir);
+          
+          mFileListAct.setListAdapter(new ArrayAdapter<String>(mFileListAct,
+              android.R.layout.simple_list_item_1, mCardContents));
+          view.invalidate();
+          
         } else {
           Bundle fileNameBundle = new Bundle();
           fileNameBundle.putString("selected_file", mSelected);
