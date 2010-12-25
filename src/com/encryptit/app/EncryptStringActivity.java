@@ -1,4 +1,4 @@
-package com.Encrypt;
+package com.encryptit.app;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
@@ -10,6 +10,8 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+
+import com.encryptit.app.R;
 
 import android.app.Activity;
 import android.content.Context;

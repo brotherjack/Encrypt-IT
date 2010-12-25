@@ -1,4 +1,4 @@
-package com.Encrypt;
+package com.encryptit.app;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,6 +13,8 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
+
+import com.encryptit.app.R;
 
 import android.app.Activity;
 import android.content.Context;
