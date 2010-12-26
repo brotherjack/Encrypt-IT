@@ -32,14 +32,20 @@ public class FileListActivity extends ListActivity {
   private String mSelected; // File name of the SWF file to load
   private static String mRootDir; // Root of this application
   private static String mCurrentDir; // Directory we are currently at
-  private static ListActivity mFileListAct;
+  private static ListActivity mFileListAct; // This activity
+  
 
+  private static final int NULL_RETURN = -1;
+  private static final int PATH_TO_FILE = 0; // Returning path to file to
+  // decrypt?
+  
   private static final String PHONE_ROOT =
       Environment.getExternalStorageDirectory().toString();
   private final String LOG_TAG = FileListActivity.class.getName();
   private final String SELECTED_PATH = "selected.path";
-  private final String LOADING_INTENT_KEY = "callingActivity";
-  
+  private final String SELECTED_TYPE = "selected.type";
+
+  private static int mReturnType = NULL_RETURN;
   private static SharedPreferences mPreferences = null;
 
   /**
@@ -49,6 +55,14 @@ public class FileListActivity extends ListActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    // If this is called by DecryptFileActivity, find out whether
+    // program is to return path to file to decrypt or key to do it with
+    if (this.getIntent().hasExtra(SELECTED_TYPE)) {
+      // Default is "path to file" if not specified, but should have an extra
+      // value.
+      mReturnType = this.getIntent().getIntExtra(SELECTED_TYPE, PATH_TO_FILE);
+    }
 
     Context thisActContext = this.getApplicationContext();
     mFileListAct = this;
@@ -80,9 +94,9 @@ public class FileListActivity extends ListActivity {
                 "Cannot access files outside of sdcard root!",
                 Toast.LENGTH_SHORT).show();
           } else {
-            //Strip trailing backspace character
-            mCurrentDir = mCurrentDir.substring(0, mCurrentDir.length()-1);
-            
+            // Strip trailing backspace character
+            mCurrentDir = mCurrentDir.substring(0, mCurrentDir.length() - 1);
+
             // Compile and match directory to the last directory on path
             Pattern pattern = Pattern.compile("/[a-zA-Z0-9-]*$");
             Matcher matcher = pattern.matcher(mCurrentDir);
@@ -110,7 +124,11 @@ public class FileListActivity extends ListActivity {
 
         } else {
           Bundle fileNameBundle = new Bundle();
-          fileNameBundle.putString(SELECTED_PATH, mCurrentDir + "/" + mSelected);
+          fileNameBundle
+              .putString(SELECTED_PATH, mCurrentDir + "/" + mSelected);
+          if(mReturnType != NULL_RETURN){
+            fileNameBundle.putInt(SELECTED_PATH, mReturnType);
+          }
 
           Intent sendFileToBrowser =
               new Intent(FileListActivity.this, callingActivity.getClass());
