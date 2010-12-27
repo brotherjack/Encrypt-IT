@@ -127,9 +127,10 @@ public class FileListActivity extends ListActivity {
           fileNameBundle
               .putString(SELECTED_PATH, mCurrentDir + "/" + mSelected);
           if(mReturnType != NULL_RETURN){
-            fileNameBundle.putInt(SELECTED_PATH, mReturnType);
+            fileNameBundle.putInt(SELECTED_TYPE, mReturnType);
           }
 
+          //Return path to calling activity for file to be be encrypted or decrypted (or key)
           Intent sendFileToBrowser =
               new Intent(FileListActivity.this, callingActivity.getClass());
           sendFileToBrowser.putExtras(fileNameBundle); // Bundle data w/ intent

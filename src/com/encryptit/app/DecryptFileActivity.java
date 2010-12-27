@@ -51,9 +51,9 @@ public class DecryptFileActivity extends Activity {
     setContentView(R.layout.decrypt_file);
 
     mFileNameEdit = (EditText) findViewById(R.id.FileNameEdit);
-    mKeyNameEdit = (EditText) findViewById(R.id.BrowseKeyButton);
-    final EditText keyNameEdit = (EditText) findViewById(R.id.KeyNameEdit);
+    mKeyNameEdit = (EditText) findViewById(R.id.KeyNameEdit);
     final Spinner encryptionSelect = (Spinner) findViewById(R.id.EncryptSelect);
+    final Button keyBrowseButton = (Button) findViewById(R.id.BrowseKeyButton);
     final Button fileBrowseButton = (Button) findViewById(R.id.BrowseButton);
     Button decryptItButton = (Button) findViewById(R.id.DecryptItButton);
 
@@ -71,7 +71,7 @@ public class DecryptFileActivity extends Activity {
       public void onClick(View encryptView) {
         String fileName = mFileNameEdit.getEditableText().toString();
         String encryptionType = encryptionSelect.getSelectedItem().toString();
-        String keyFileName = keyNameEdit.getEditableText().toString();
+        String keyFileName = mKeyNameEdit.getEditableText().toString();
         boolean sdcardAccessible = true;
         try {
           sdcardAccessible = canReadAndWrite();
@@ -91,6 +91,16 @@ public class DecryptFileActivity extends Activity {
         Intent fileViewIntent =
             new Intent(DecryptFileActivity.this, FileListActivity.class);
         fileViewIntent.putExtra(SELECTED_TYPE, PATH_TO_FILE);
+        startActivityForResult(fileViewIntent, RETURN_PATH_TO_LOAD);
+      }
+    });
+    
+    keyBrowseButton.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View encryptView) {
+        Intent fileViewIntent =
+            new Intent(DecryptFileActivity.this, FileListActivity.class);
+        fileViewIntent.putExtra(SELECTED_TYPE, PATH_TO_KEY_FILE);
         startActivityForResult(fileViewIntent, RETURN_PATH_TO_LOAD);
       }
     });
