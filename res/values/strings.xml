@@ -1,15 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Encrypt-IT</string>
-    <string name="FileNameLabel">File to Encrypt:</string>
-    <string name="BrowseButtonText">Browse</string>
+    <string name="EncryptStringButtonText">Encrypt a string</string>
+    <string name="EncryptFileButtonText">Encrypt a file</string>
+    <string name="DecryptFileButtonText">Decrypt a file</string>
+    
+    <string name="EncryptAString">Encrypt a string:</string>
+    <string name="StringLabel">String to Encrypt:</string>
     <string name="EncryptSelectText">Encryption Method:</string>
     <string name="EncryptItButtonText">Encrypt IT!</string>
+    <string name="SeedText">Enter seed: </string>
     <string-array name="EncryptSelectOptions">
     	<item>AES</item>
-    	<item>Blowfish</item>
     	<item>DES</item>
-    	<item>RC5</item>
-    	<item>RSA</item>
     </string-array>
+    
+    <string name="EncryptFile">Encrypt File</string>
+    <string name="FileNameLabel">File Name:</string>
+    <string name="BrowseButtonLabel">Browse</string>
+    <string name="DecryptItButtonText">Decrypt IT!</string>
+    
+    <string name="DecryptFile">Decrypt File</string>
+    <string name="KeyNameLabel">Key Name:</string>
+    <string name="DecryptFileName">Output Dir:</string>
+    
+    <string name="FileList">Browse for File</string>
 </resources>

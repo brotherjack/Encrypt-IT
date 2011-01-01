@@ -1,18 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.Encrypt"
-      android:versionCode="1"
+      package="com.encryptit.app"
+      android:versionCode="0"
       android:versionName="1.0">
-    <application android:icon="@drawable/icon" android:label="@string/app_name">
-        <activity android:name=".EncryptActivity"
+    <uses-sdk android:minSdkVersion="1" />
+    <application android:icon="@drawable/icon" android:label="@string/app_name"
+    			 android:debuggable="true">
+        <activity android:name="com.encryptit.app.HomeActivity"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        
+        <activity android:name="com.encryptit.app.EncryptStringActivity"
+                  android:label="@string/EncryptAString">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
+        <activity android:name="com.encryptit.app.EncryptFileActivity"
+                  android:label="@string/EncryptFile">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
+		<activity android:name="com.encryptit.app.DecryptFileActivity"
+                  android:label="@string/DecryptFile">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
+        <activity android:name="com.encryptit.app.FileListActivity"
+                  android:label="@string/FileList">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+		
     </application>
-
 
 </manifest> 
