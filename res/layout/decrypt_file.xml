@@ -62,10 +62,27 @@
     	android:layout_height="wrap_content"
     	android:layout_toRightOf="@+id/EncryptSelectLbl"
     	android:layout_below="@+id/KeyNameEdit"/>
+    <TextView
+    	android:id="@+id/DecryptNameLbl"
+    	android:layout_height="wrap_content"
+    	android:layout_width="wrap_content"
+    	android:text="@string/DecryptFileName"
+    	android:textSize="8pt"
+    	android:paddingTop="10dip"
+	    android:paddingBottom="20dip" 
+	    android:layout_below="@+id/EncryptSelectLbl"/>
+	 <EditText
+    	android:id="@+id/DecryptNameEdit"
+    	android:layout_width="160dip"
+    	android:layout_height="wrap_content"
+    	android:maxLines="1"
+    	android:scrollHorizontally="true"
+    	android:layout_toRightOf="@+id/DecryptNameLbl"
+    	android:layout_below="@+id/EncryptSelect"/>	
     <Button
     	android:id="@+id/DecryptItButton"
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
     	android:text="@string/DecryptItButtonText"
-    	android:layout_below="@+id/EncryptSelectLbl"/>
+    	android:layout_below="@+id/DecryptNameLbl"/>
 </RelativeLayout>
