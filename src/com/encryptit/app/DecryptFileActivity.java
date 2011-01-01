@@ -37,8 +37,7 @@ public class DecryptFileActivity extends Activity {
 	// decrypt?
 	private static final int PATH_TO_KEY_FILE = 1; // or returning path to key
 	// file?
-	private static final int PATH_TO_OUTPUT_DIR = 2; // or a path to a valid
-														// directory?
+	
 	private static final int RETURN_PATH_TO_LOAD = 83;
 	private final String SELECTED_PATH = "selected.path";
 	private final String SELECTED_TYPE = "selected.type";
@@ -63,7 +62,6 @@ public class DecryptFileActivity extends Activity {
 		final Spinner encryptionSelect = (Spinner) findViewById(R.id.EncryptSelect);
 		final Button keyBrowseButton = (Button) findViewById(R.id.BrowseKeyButton);
 		final Button fileBrowseButton = (Button) findViewById(R.id.BrowseButton);
-		final Button outputBrowseButton = (Button) findViewById(R.id.BrowseDecryptButton);
 		Button decryptItButton = (Button) findViewById(R.id.DecryptItButton);
 
 		ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter
@@ -81,8 +79,7 @@ public class DecryptFileActivity extends Activity {
 				Context thisContext = mDecryptThis.getApplicationContext();
 				mPreferences = thisContext.getSharedPreferences(
 						"User Preferences", 0);
-				// String decryptPath = mPreferences.getString("decryptedDir",
-				// null);
+				String decryptPath = mPreferences.getString("decryptedDir", null);
 
 				String fileName = mFileNameEdit.getEditableText().toString();
 				String outputName = mDecryptNameEdit.getEditableText()
@@ -95,7 +92,7 @@ public class DecryptFileActivity extends Activity {
 					sdcardAccessible = canReadAndWrite();
 					if (sdcardAccessible)
 						DecryptFile(encryptionType, fileName, keyFileName,
-								outputName);
+								outputName, decryptPath);
 				} catch (ReadAndWriteFileException rawfe) {
 					Toast.makeText(mDecryptThis, rawfe.getMessage(),
 							Toast.LENGTH_SHORT).show();
@@ -122,16 +119,6 @@ public class DecryptFileActivity extends Activity {
 				startActivityForResult(fileViewIntent, RETURN_PATH_TO_LOAD);
 			}
 		});
-
-		outputBrowseButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View encryptView) {
-				Intent fileViewIntent = new Intent(DecryptFileActivity.this,
-						FileListActivity.class);
-				fileViewIntent.putExtra(SELECTED_TYPE, PATH_TO_OUTPUT_DIR);
-				startActivityForResult(fileViewIntent, RETURN_PATH_TO_LOAD);
-			}
-		});
 	}
 
 	@Override
@@ -152,10 +139,6 @@ public class DecryptFileActivity extends Activity {
 							mKeyNameEdit.setText(path);
 							Log.i(LOG_TAG, "Placed path named \"" + path
 									+ "\" into KeyNameEdit, EditText.");
-						} else if (type == PATH_TO_OUTPUT_DIR) {
-							mDecryptNameEdit.setText(path);
-							Log.i(LOG_TAG, "Placed path named \"" + path
-									+ "\" into OutputNameEdit, EditText.");
 						} else {
 							Log.e(LOG_TAG,
 									"Unknown error in finding type to return from file viewer.");
@@ -187,7 +170,7 @@ public class DecryptFileActivity extends Activity {
 	}
 
 	private void DecryptFile(String encryptionType, String fileName,
-			String keyFileName, String outputName) {
+			String keyFileName, String outputName, String decryptPath) {
 		try {
 			Cipher decCipher = Cipher.getInstance(encryptionType);
 			SecretKeySpec key = getKey(mKeyNameEdit.getEditableText()
@@ -209,15 +192,7 @@ public class DecryptFileActivity extends Activity {
 			if (outputName.equals("")) {
 				outputName = EncryptFileActivity.makeRandomFileName();
 			}
-			if (!new File(outputName).isDirectory()) {
-				Log.e(LOG_TAG,
-						"Path in output directory name edit text is not a valid directory.");
-				Toast.makeText(
-						mDecryptThis,
-						"Failed.  Check to make sure that the selected output path leads to a directory.",
-						Toast.LENGTH_SHORT);
-				return;
-			}
+			outputName = decryptPath + "/" + outputName;
 
 			FileOutputStream output = new FileOutputStream(new File(outputName));
 			output.write(decrypt);
@@ -269,39 +244,6 @@ public class DecryptFileActivity extends Activity {
 				}
 		}
 		return null;
-	}
-
-	private void determineOutputFileName() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(mDecryptThis);
-		final EditText outputText = new EditText(mDecryptThis);
-		builder.setMessage("Please enter the desired name of the output file.")
-				.setView(outputText)
-				.setCancelable(false)
-				.setPositiveButton("Enter",
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
-								mOutput = outputText.getEditableText()
-										.toString();
-								if (!mOutput.equals("")) {
-									dialog.cancel();
-								} else {
-									Toast.makeText(
-											mDecryptThis,
-											"No text detected.  Making a random filename",
-											Toast.LENGTH_SHORT).show();
-									mOutput = EncryptFileActivity
-											.makeRandomFileName();
-								}
-							}
-						})
-				.setNegativeButton("Don't Care...",
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
-								mOutput = EncryptFileActivity
-										.makeRandomFileName();
-							}
-						});
-		builder.create().show();
 	}
 
 	private class FileTooBigException extends Exception {

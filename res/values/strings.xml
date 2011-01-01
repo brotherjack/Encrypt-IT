@@ -22,6 +22,7 @@
     
     <string name="DecryptFile">Decrypt File</string>
     <string name="KeyNameLabel">Key Name:</string>
+    <string name="DecryptFileName">Output Dir:</string>
     
     <string name="FileList">Browse for File</string>
 </resources>
