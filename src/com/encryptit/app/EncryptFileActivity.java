@@ -10,6 +10,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -89,7 +91,7 @@ public class EncryptFileActivity extends Activity {
 					}
 
 					String fileIn = fileName;
-					newFileName = makeRandomFileName() + ".ef";
+					newFileName = makeRandomFileName();
 					fileOut = encryptedDir + "/" + newFileName;
 					String keyFileName = keyDir + "/" + fileName;
 
@@ -158,18 +160,21 @@ public class EncryptFileActivity extends Activity {
 		}
 	}
 
-	private String makeRandomFileName() {
+	public static String makeRandomFileName() {
 		// Create random value generator
 		Random gen = new Random(System.currentTimeMillis());
 
 		// A character in java is two bytes, so this will be a string between 1
 		// and 15 characters long
 		int stringSize = 1 + gen.nextInt(15) * 2;
-		byte[] buf = new byte[stringSize];
 
 		gen.setSeed(System.currentTimeMillis()); // Set to new seed
-		gen.nextBytes(buf);
-		return new String(buf.toString());
+		String output = "";
+		for(int i=0; i < stringSize; i++){
+			int nInt = gen.nextInt(75)+48;			
+			output += String.valueOf((char)nInt);
+		}
+		return output;
 	}
 
 	private SecretKeySpec makeKey(String fileName, String seed) {
@@ -198,8 +203,13 @@ public class EncryptFileActivity extends Activity {
 	private void saveKey(SecretKeySpec key, String keyDir, String filePath) {
 		FileOutputStream output = null;
 		try {
+			Pattern lastBranch = Pattern.compile("[a-zA-Z0-9._-]*$");
+			Matcher matcher = lastBranch.matcher(filePath);
+            matcher.find();
+            
+            String fileName = filePath.substring(matcher.start(), matcher.end());
 			
-			File fileOut = new File(filePath + ".key");
+			File fileOut = new File(keyDir + "/" + fileName + ".key");
 
 			output = new FileOutputStream(fileOut);
 

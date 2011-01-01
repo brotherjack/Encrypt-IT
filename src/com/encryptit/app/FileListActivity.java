@@ -106,14 +106,14 @@ public class FileListActivity extends ListActivity {
             mCurrentDir = (String) mCurrentDir.substring(0, matcher.start());
 
             loadDir(mCurrentDir);
-            Log.i(LOG_TAG, "Working directory for Encrpt-It is " + mCurrentDir);
+            Log.i(LOG_TAG, "Working directory for Encrypt-It is " + mCurrentDir);
 
             mFileListAct.setListAdapter(new ArrayAdapter<String>(mFileListAct,
                 android.R.layout.simple_list_item_1, mCardContents));
             view.invalidate();
           }
         } else if (selected.isDirectory()) {
-          mCurrentDir = mCurrentDir.concat(mSelected.concat("/"));
+          mCurrentDir = mCurrentDir.concat(mSelected);
 
           loadDir(mCurrentDir);
           Log.i(LOG_TAG, "Working directory for Encrpt-It is " + mCurrentDir);
