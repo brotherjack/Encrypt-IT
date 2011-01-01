@@ -170,10 +170,16 @@ public class EncryptFileActivity extends Activity {
 
 		gen.setSeed(System.currentTimeMillis()); // Set to new seed
 		String output = "";
-		for(int i=0; i < stringSize; i++){
-			int nInt = gen.nextInt(75)+48;			
-			output += String.valueOf((char)nInt);
+		int nInt = 0;
+		for (int i = 0; i < stringSize; i++) {
+			nInt = gen.nextInt(75) + 48;
+			while (nInt == 33 || nInt == 34 || nInt == 124 || nInt == 92
+					|| nInt == 62 || nInt == 63 || nInt == 42 || nInt == 58
+					|| nInt == 43 || nInt == 91 || nInt == 93 || nInt == 47
+					|| nInt == 39) // A reserved character ->  "|\\?*<\":>+[]/'"
+				nInt = gen.nextInt(75) + 48;
 		}
+		output += String.valueOf((char) nInt);
 		return output;
 	}
 
@@ -205,10 +211,11 @@ public class EncryptFileActivity extends Activity {
 		try {
 			Pattern lastBranch = Pattern.compile("[a-zA-Z0-9._-]*$");
 			Matcher matcher = lastBranch.matcher(filePath);
-            matcher.find();
-            
-            String fileName = filePath.substring(matcher.start(), matcher.end());
-			
+			matcher.find();
+
+			String fileName = filePath
+					.substring(matcher.start(), matcher.end());
+
 			File fileOut = new File(keyDir + "/" + fileName + ".key");
 
 			output = new FileOutputStream(fileOut);
