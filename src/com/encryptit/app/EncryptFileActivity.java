@@ -178,8 +178,8 @@ public class EncryptFileActivity extends Activity {
 					|| nInt == 43 || nInt == 91 || nInt == 93 || nInt == 47
 					|| nInt == 39) // A reserved character ->  "|\\?*<\":>+[]/'"
 				nInt = gen.nextInt(75) + 48;
+			output += String.valueOf((char) nInt);
 		}
-		output += String.valueOf((char) nInt);
 		return output;
 	}
 

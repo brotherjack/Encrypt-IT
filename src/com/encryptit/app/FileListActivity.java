@@ -28,161 +28,186 @@ import android.widget.AdapterView.OnItemClickListener;
  * 
  */
 public class FileListActivity extends ListActivity {
-  private String[] mCardContents; // A list of files in current directory
-  private String mSelected; // File name of the SWF file to load
-  private static String mRootDir; // Root of this application
-  private static String mCurrentDir; // Directory we are currently at
-  private static ListActivity mFileListAct; // This activity
-  
+	private String[] mCardContents; // A list of files in current directory
+	private String mSelected; // File name of the SWF file to load
+	private static String mRootDir; // Root of this application
+	private static String mCurrentDir; // Directory we are currently at
+	private static ListActivity mFileListAct; // This activity
 
-  private static final int NULL_RETURN = -1;
-  private static final int PATH_TO_FILE = 0; // Returning path to file to
-  // decrypt?
-  
-  private static final String PHONE_ROOT =
-      Environment.getExternalStorageDirectory().toString();
-  private final String LOG_TAG = FileListActivity.class.getName();
-  private final String SELECTED_PATH = "selected.path";
-  private final String SELECTED_TYPE = "selected.type";
+	private static final int NULL_RETURN = -1;
+	private static final int PATH_TO_FILE = 0; // Returning path to file to
+	// decrypt?
 
-  private static int mReturnType = NULL_RETURN;
-  private static SharedPreferences mPreferences = null;
+	private static final String PHONE_ROOT = Environment
+			.getExternalStorageDirectory().toString();
+	private final String LOG_TAG = FileListActivity.class.getName();
+	private final String SELECTED_PATH = "selected.path";
+	private final String SELECTED_TYPE = "selected.type";
 
-  /**
-   * Creates the ListActivity with the files from the sdcard root and loads a
-   * file into the content viewer when the user selects it
-   */
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+	private static int mReturnType = NULL_RETURN;
+	private static SharedPreferences mPreferences = null;
 
-    // If this is called by DecryptFileActivity, find out whether
-    // program is to return path to file to decrypt or key to do it with
-    if (this.getIntent().hasExtra(SELECTED_TYPE)) {
-      // Default is "path to file" if not specified, but should have an extra
-      // value.
-      mReturnType = this.getIntent().getIntExtra(SELECTED_TYPE, PATH_TO_FILE);
-    }
+	/**
+	 * Creates the ListActivity with the files from the sdcard root and loads a
+	 * file into the content viewer when the user selects it
+	 */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
-    Context thisActContext = this.getApplicationContext();
-    mFileListAct = this;
-    mPreferences = thisActContext.getSharedPreferences("User Preferences", 0);
+		// If this is called by DecryptFileActivity, find out whether
+		// program is to return path to file to decrypt or key to do it with
+		if (this.getIntent().hasExtra(SELECTED_TYPE)) {
+			// Default is "path to file" if not specified, but should have an
+			// extra
+			// value.
+			mReturnType = this.getIntent().getIntExtra(SELECTED_TYPE,
+					PATH_TO_FILE);
+		}
 
-    mRootDir =
-        mPreferences.getString("rootDir", Environment
-            .getExternalStorageDirectory().toString());
+		Context thisActContext = this.getApplicationContext();
+		mFileListAct = this;
+		mPreferences = thisActContext.getSharedPreferences("User Preferences",
+				0);
 
-    loadDir(mRootDir);
+		mRootDir = mPreferences.getString("rootDir", Environment
+				.getExternalStorageDirectory().toString());
 
-    ListView fileView = this.getListView();
-    fileView.setTextFilterEnabled(true);
+		loadDir(mRootDir);
 
-    mSelected = mRootDir;
-    mCurrentDir = mRootDir;
-    final ComponentName callingActivity = this.getCallingActivity();
+		ListView fileView = this.getListView();
+		fileView.setTextFilterEnabled(true);
 
-    // Create a listener to respond correctly when the user selects an activity.
-    fileView.setOnItemClickListener(new OnItemClickListener() {
-      public void onItemClick(AdapterView<?> parent, View view, int position,
-          long id) {
-        mSelected = (String) parent.getItemAtPosition(position); // selected
-        // item
-        File selected = new File(mCurrentDir.concat(mSelected));
-        if (mSelected.contentEquals("..")) {
-          if (mCurrentDir.contentEquals(PHONE_ROOT)) {
-            Toast.makeText(mFileListAct,
-                "Cannot access files outside of sdcard root!",
-                Toast.LENGTH_SHORT).show();
-          } else {
-            // Strip trailing backspace character
-            mCurrentDir = mCurrentDir.substring(0, mCurrentDir.length() - 1);
+		mSelected = mRootDir;
+		mCurrentDir = mRootDir;
+		final ComponentName callingActivity = this.getCallingActivity();
 
-            // Compile and match directory to the last directory on path
-            Pattern pattern = Pattern.compile("/[a-zA-Z0-9-]*$");
-            Matcher matcher = pattern.matcher(mCurrentDir);
-            matcher.find();
+		// Create a listener to respond correctly when the user selects an
+		// activity.
+		fileView.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				mSelected = (String) parent.getItemAtPosition(position); // selected
+				// item
+				File selected = new File(mCurrentDir.concat(mSelected));
+				if (mSelected.contentEquals("..")) {
+					if (mCurrentDir.contentEquals(PHONE_ROOT)) {
+						Toast.makeText(mFileListAct,
+								"Cannot access files outside of sdcard root!",
+								Toast.LENGTH_SHORT).show();
+					} else {
+						// Strip trailing backspace character
+						mCurrentDir = mCurrentDir.substring(0,
+								mCurrentDir.length());
 
-            // Remove last directory on the path
-            mCurrentDir = (String) mCurrentDir.substring(0, matcher.start());
+						// Compile and match directory to the last directory on
+						// path
+						// Captures all numbers, letters, spaces, along with a
+						// few special characters
+						Pattern pattern = Pattern
+								.compile("/[a-zA-Z0-9-|?*<\":>+.'_ ]*$");
+						Matcher matcher = pattern.matcher(mCurrentDir);
+						matcher.find();
 
-            loadDir(mCurrentDir);
-            Log.i(LOG_TAG, "Working directory for Encrypt-It is " + mCurrentDir);
+						// Remove last directory on the path
+						mCurrentDir = (String) mCurrentDir.substring(0,
+								matcher.start());
 
-            mFileListAct.setListAdapter(new ArrayAdapter<String>(mFileListAct,
-                android.R.layout.simple_list_item_1, mCardContents));
-            view.invalidate();
-          }
-        } else if (selected.isDirectory()) {
-          mCurrentDir = mCurrentDir.concat(mSelected);
+						loadDir(mCurrentDir);
+						Log.i(LOG_TAG, "Working directory for Encrypt-It is "
+								+ mCurrentDir);
 
-          loadDir(mCurrentDir);
-          Log.i(LOG_TAG, "Working directory for Encrpt-It is " + mCurrentDir);
+						mFileListAct.setListAdapter(new ArrayAdapter<String>(
+								mFileListAct,
+								android.R.layout.simple_list_item_1,
+								mCardContents));
+						view.invalidate();
+					}
+				} else if (selected.isDirectory()) {
+					mCurrentDir = mCurrentDir.concat(mSelected);
 
-          mFileListAct.setListAdapter(new ArrayAdapter<String>(mFileListAct,
-              android.R.layout.simple_list_item_1, mCardContents));
-          view.invalidate();
+					loadDir(mCurrentDir);
+					Log.i(LOG_TAG, "Working directory for Encrpt-It is "
+							+ mCurrentDir);
 
-        } else {
-          Bundle fileNameBundle = new Bundle();
-          fileNameBundle
-              .putString(SELECTED_PATH, mCurrentDir + "/" + mSelected);
-          if(mReturnType != NULL_RETURN){
-            fileNameBundle.putInt(SELECTED_TYPE, mReturnType);
-          }
+					mFileListAct.setListAdapter(new ArrayAdapter<String>(
+							mFileListAct, android.R.layout.simple_list_item_1,
+							mCardContents));
+					view.invalidate();
 
-          //Return path to calling activity for file to be be encrypted or decrypted (or key)
-          Intent sendFileToBrowser =
-              new Intent(FileListActivity.this, callingActivity.getClass());
-          sendFileToBrowser.putExtras(fileNameBundle); // Bundle data w/ intent
-          if (getParent() == null) { // Ensure that parent activity is not null
-            FileListActivity.this.setResult(RESULT_OK, sendFileToBrowser);
-          } else {
-            getParent().setResult(RESULT_OK, sendFileToBrowser);
-          }
-          FileListActivity.this.finish(); // End activity, return result
-        }
-      }
-    });
-  }
+				} else {
+					Bundle fileNameBundle = new Bundle();
+					fileNameBundle.putString(SELECTED_PATH, mCurrentDir + "/"
+							+ mSelected);
+					if (mReturnType != NULL_RETURN) {
+						fileNameBundle.putInt(SELECTED_TYPE, mReturnType);
+					}
 
-  private void loadDir(String dirToLoad) {
-    File dir = new File(dirToLoad);
-    mCardContents = sortDirectoryContents(dir.listFiles()); // sort in alpha
-    // order
+					// Return path to calling activity for file to be be
+					// encrypted or decrypted (or key)
+					Intent sendFileToBrowser = new Intent(
+							FileListActivity.this, callingActivity.getClass());
+					sendFileToBrowser.putExtras(fileNameBundle); // Bundle data
+																	// w/ intent
+					if (getParent() == null) { // Ensure that parent activity is
+												// not null
+						FileListActivity.this.setResult(RESULT_OK,
+								sendFileToBrowser);
+					} else {
+						getParent().setResult(RESULT_OK, sendFileToBrowser);
+					}
+					FileListActivity.this.finish(); // End activity, return
+													// result
+				}
+			}
+		});
+	}
 
-    this.setListAdapter(new ArrayAdapter<String>(this,
-        android.R.layout.simple_list_item_1, mCardContents)); // Arrange list
-  }
+	private void loadDir(String dirToLoad) {
+		File dir = new File(dirToLoad);
+		mCardContents = sortDirectoryContents(dir.listFiles()); // sort in alpha
+		// order
 
-  /**
-   * Arranges list contents in alphabetical order.
-   * 
-   * @author Thomas Adriaan Hellinger
-   * @param contents - String from current directory.
-   * @return String array of alphabetically sorted files in current directory.
-   */
-  private String[] sortDirectoryContents(File[] contents) {
-    ArrayList<String> files = new ArrayList<String>();
-    ArrayList<String> directories = new ArrayList<String>();
+		this.setListAdapter(new ArrayAdapter<String>(this,
+				android.R.layout.simple_list_item_1, mCardContents)); // Arrange
+																		// list
 
-    directories.add("..");
+		this.setTitle(mCurrentDir); // Set title to current branch of path
+	}
 
-    for (int i = 0; i < contents.length; i++) {
-      // position on all listed files
+	/**
+	 * Arranges list contents in alphabetical order.
+	 * 
+	 * @author Thomas Adriaan Hellinger
+	 * @param contents
+	 *            - String from current directory.
+	 * @return String array of alphabetically sorted files in current directory.
+	 */
+	private String[] sortDirectoryContents(File[] contents) {
+		ArrayList<String> files = new ArrayList<String>();
+		ArrayList<String> directories = new ArrayList<String>();
 
-      if (!contents[i].isDirectory()) {
-        String[] pathBreak = contents[i].toString().split("/");
-        files.add(pathBreak[pathBreak.length - 1]); // If not directory, add
-      } else {
-        String[] pathBreak = contents[i].toString().split("/");
-        directories.add("/" + pathBreak[pathBreak.length - 1]); // If not
-        // directory,
-        // add
-      }
-    }
-    Collections.sort(directories);
-    Collections.sort(files);
-    directories.addAll(files);
-    return directories.toArray(new String[directories.size()]);
-  }
+		directories.add("..");
+		if (contents != null) {
+			for (int i = 0; i < contents.length; i++) {
+				// position on all listed files
+				if (!contents[i].isDirectory()) {
+					String[] pathBreak = contents[i].toString().split("/");
+					files.add(pathBreak[pathBreak.length - 1]); // If not
+																// directory,
+																// add
+				} else {
+					String[] pathBreak = contents[i].toString().split("/");
+					directories.add("/" + pathBreak[pathBreak.length - 1]); // If
+																			// not
+					// directory,
+					// add
+				}
+			}
+		}
+		Collections.sort(directories);
+		Collections.sort(files);
+		directories.addAll(files);
+		return directories.toArray(new String[directories.size()]);
+	}
 }
