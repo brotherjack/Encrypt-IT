@@ -15,9 +15,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -27,6 +25,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -62,6 +61,7 @@ public class DecryptFileActivity extends Activity {
 		final Spinner encryptionSelect = (Spinner) findViewById(R.id.EncryptSelect);
 		final Button keyBrowseButton = (Button) findViewById(R.id.BrowseKeyButton);
 		final Button fileBrowseButton = (Button) findViewById(R.id.BrowseButton);
+		final CheckBox inPlace = (CheckBox) findViewById(R.id.DecInPlaceCheck);
 		Button decryptItButton = (Button) findViewById(R.id.DecryptItButton);
 
 		ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter
@@ -90,9 +90,14 @@ public class DecryptFileActivity extends Activity {
 				boolean sdcardAccessible = true;
 				try {
 					sdcardAccessible = canReadAndWrite();
-					if (sdcardAccessible)
-						DecryptFile(encryptionType, fileName, keyFileName,
-								outputName, decryptPath);
+					if (sdcardAccessible){
+						boolean decInPlace = false;
+						if(inPlace.isChecked()){
+							decInPlace = true;	
+						}
+						DecryptFile(encryptionType, keyFileName,
+									outputName, decryptPath, decInPlace);
+					}
 				} catch (ReadAndWriteFileException rawfe) {
 					Toast.makeText(mDecryptThis, rawfe.getMessage(),
 							Toast.LENGTH_SHORT).show();
@@ -169,8 +174,8 @@ public class DecryptFileActivity extends Activity {
 		}
 	}
 
-	private void DecryptFile(String encryptionType, String fileName,
-			String keyFileName, String outputName, String decryptPath) {
+	private void DecryptFile(String encryptionType, String keyFileName, 
+			String outputName, String decryptPath, boolean inPlace) {
 		try {
 			Cipher decCipher = Cipher.getInstance(encryptionType);
 			SecretKeySpec key = getKey(mKeyNameEdit.getEditableText()
@@ -191,8 +196,11 @@ public class DecryptFileActivity extends Activity {
 
 			if (outputName.equals("")) {
 				outputName = EncryptFileActivity.makeRandomFileName();
+			} else if(inPlace){
+				outputName = filePath;
+			} else {
+				outputName = decryptPath + "/" + outputName;
 			}
-			outputName = decryptPath + "/" + outputName;
 
 			FileOutputStream output = new FileOutputStream(new File(outputName));
 			output.write(decrypt);

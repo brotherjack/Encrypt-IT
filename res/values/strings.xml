@@ -25,4 +25,8 @@
     <string name="DecryptFileName">Output Dir:</string>
     
     <string name="FileList">Browse for File</string>
+    
+    <!-- Ask user if they would like to encrypt/decrypt file in place -->
+	<string name="encInPlaceLblTxt">Encrypt file in place</string>
+	<string name="DecInPlaceLblTxt">Decrypt file in place</string>
 </resources>

@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -52,6 +53,7 @@ public class EncryptFileActivity extends Activity {
 		mBrowseButton = (Button) findViewById(R.id.BrowseButton);
 		Button encryptItButton = (Button) findViewById(R.id.EncryptItButton);
 		final EditText seedEdit = (EditText) findViewById(R.id.seedEdit);
+		final CheckBox inPlace = (CheckBox) findViewById(R.id.EncInPlaceCheck);
 
 		ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter
 				.createFromResource(this, R.array.EncryptSelectOptions,
@@ -89,10 +91,16 @@ public class EncryptFileActivity extends Activity {
 						throw new KeyGenFailException(
 								KeyGenFailException.failureTypes.EMPTY_FIELD);
 					}
-
+					
 					String fileIn = fileName;
-					newFileName = makeRandomFileName();
-					fileOut = encryptedDir + "/" + newFileName;
+					Boolean isInPlace = false;
+					if(inPlace.isChecked()){
+						isInPlace = true;
+					} else {
+						newFileName = makeRandomFileName();
+						fileOut = encryptedDir + "/" + newFileName;
+					}
+					
 					String keyFileName = keyDir + "/" + fileName;
 
 					SecretKeySpec key = makeKey(keyFileName, seed);
@@ -102,7 +110,7 @@ public class EncryptFileActivity extends Activity {
 					else
 						saveKey(key, keyDir, fileName);
 
-					encryptFile(fileIn, fileOut, encryptionType, key);
+					encryptFile(fileIn, fileOut, encryptionType, key, isInPlace);
 				} catch (KeyGenFailException e) {
 					String msg = null;
 					if (e.fail == KeyGenFailException.failureTypes.KEY_NULL) {
@@ -209,7 +217,7 @@ public class EncryptFileActivity extends Activity {
 	private void saveKey(SecretKeySpec key, String keyDir, String filePath) {
 		FileOutputStream output = null;
 		try {
-			Pattern lastBranch = Pattern.compile("[a-zA-Z0-9._-]*$");
+			Pattern lastBranch = Pattern.compile("[a-zA-Z0-9-|?*<\":>+.'_ ]*$");
 			Matcher matcher = lastBranch.matcher(filePath);
 			matcher.find();
 
@@ -235,10 +243,11 @@ public class EncryptFileActivity extends Activity {
 	}
 
 	private void encryptFile(String fileInName, String fileOutName,
-			String encryptionType, SecretKeySpec key) {
+			String encryptionType, SecretKeySpec key, boolean isInPlace) {
 		FileInputStream input = null;
 		FileOutputStream output = null;
 		Cipher encCipher = null;
+		File fileInPlace = null; //To be used to rename the file to random, if user wants it encrypted in place
 		try {
 			encCipher = Cipher.getInstance(encryptionType);
 			encCipher.init(Cipher.ENCRYPT_MODE, key);
@@ -253,9 +262,25 @@ public class EncryptFileActivity extends Activity {
 
 			byte[] encrypted = encCipher.doFinal(plainText);
 
-			output = new FileOutputStream(new File(fileOutName + ".enc"));
+			if(isInPlace){ //User wants to encrypt the file in its present location
+				fileInPlace = new File(fileInName);
+				output = new FileOutputStream(fileInPlace);
+			} else {
+				output = new FileOutputStream(new File(fileOutName + ".enc"));
+			}
 			output.write(encrypted);
-
+			
+			if(isInPlace){
+				Pattern lastBranch = Pattern.compile("[a-zA-Z0-9-|?*<\":>+.'_ ]*$");
+				Matcher matcher = lastBranch.matcher(fileInName);
+				matcher.find();
+				
+				String pathTo = (String)fileInName.subSequence(0, matcher.start()-1);
+				String encryptedName = pathTo.concat(makeRandomFileName());
+				encryptedName.concat(".enc");
+				
+				fileInPlace.renameTo(new File(encryptedName));
+			}
 			Toast.makeText(this, "Encrypted \'" + fileInName + "\'.",
 					Toast.LENGTH_SHORT).show();
 		} catch (BadPaddingException e) {

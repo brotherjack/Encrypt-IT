@@ -38,12 +38,16 @@
     	android:layout_height="wrap_content"
     	android:layout_toRightOf="@+id/EncryptSelectLbl"
     	android:layout_below="@+id/FileNameEdit"/>
-    <Button
+    
+    <!-- Encrypt-IT! BUTTON -->
+    <Button 
     	android:id="@+id/EncryptItButton"
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
     	android:text="@string/EncryptItButtonText"
-    	android:layout_below="@+id/SeedLbl"/>
+    	android:layout_marginTop="10dip"
+    	android:layout_below="@+id/EncInPlaceLbl"/>
+    
     <TextView
     	android:id="@+id/SeedLbl"
     	android:layout_width="wrap_content"
@@ -60,5 +64,27 @@
 		android:maxLines="1"
     	android:scrollHorizontally="true"
 		android:layout_toRightOf="@+id/SeedLbl"
-		android:layout_below="@+id/EncryptSelect"/>    			
+		android:layout_below="@+id/EncryptSelect"/>
+		
+	<!-- Edit in place checkbox and text -->
+	<CheckBox 
+		android:id="@+id/EncInPlaceCheck"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingTop="10dip"
+		android:paddingBottom="10dip"
+		android:layout_below="@+id/SeedLbl"/>
+	<TextView 
+		android:id="@+id/EncInPlaceLbl"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textSize="8pt"
+	    android:paddingTop="10dip"
+	    android:paddingBottom="20dip"
+		android:layout_below="@+id/seedEdit"
+		android:layout_toRightOf="@+id/EncInPlaceCheck"
+		android:text="@string/encInPlaceLblTxt"
+		android:layout_alignBaseline="@+id/EncInPlaceCheck"/>
+	
+		    			
 </RelativeLayout>

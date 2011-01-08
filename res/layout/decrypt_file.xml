@@ -9,7 +9,8 @@
 	    android:text="@string/FileNameLabel"
 	    android:textSize="8pt"
 	    android:paddingTop="10dip"
-	    android:paddingBottom="20dip" />
+	    android:paddingBottom="20dip"
+	    android:layout_alignBaseline="@+id/FileNameEdit" />
     <EditText
     	android:id="@+id/FileNameEdit"
     	android:layout_width="160dip"
@@ -31,7 +32,8 @@
 	    android:textSize="8pt"
 	    android:paddingTop="10dip"
 	    android:paddingBottom="20dip" 
-	    android:layout_below="@+id/FileNameLbl"/>
+	    android:layout_below="@+id/FileNameLbl"
+	    android:layout_alignBaseline="@+id/KeyNameEdit"/>
     <EditText
     	android:id="@+id/KeyNameEdit"
     	android:layout_width="160dip"
@@ -52,10 +54,9 @@
     	android:layout_height="wrap_content"
     	android:layout_width="wrap_content"
     	android:text="@string/EncryptSelectText"
-    	android:textSize="8pt"
-    	android:paddingTop="10dip"
-	    android:paddingBottom="20dip" 
-	    android:layout_below="@+id/KeyNameLbl"/>	
+    	android:textSize="8pt" 
+	    android:layout_below="@+id/KeyNameLbl"
+	    android:layout_alignBaseline="@+id/EncryptSelect"/>	
     <Spinner 
     	android:id="@+id/EncryptSelect"
     	android:layout_width="fill_parent"
@@ -70,7 +71,8 @@
     	android:textSize="8pt"
     	android:paddingTop="10dip"
 	    android:paddingBottom="20dip" 
-	    android:layout_below="@+id/EncryptSelectLbl"/>
+	    android:layout_below="@+id/EncryptSelectLbl"
+	    android:layout_alignBaseline="@+id/DecryptNameEdit"/>
 	 <EditText
     	android:id="@+id/DecryptNameEdit"
     	android:layout_width="160dip"
@@ -84,5 +86,23 @@
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
     	android:text="@string/DecryptItButtonText"
-    	android:layout_below="@+id/DecryptNameLbl"/>
+    	android:layout_below="@+id/DecInPlaceCheck"/>
+    <TextView 
+    	android:id="@+id/DecInPlaceLbl"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:textSize="8pt"
+	    android:paddingTop="10dip"
+	    android:paddingBottom="20dip"
+	    android:text="@string/DecInPlaceLblTxt"
+    	android:layout_below="@+id/DecryptNameEdit"
+    	android:layout_toRightOf="@+id/DecInPlaceCheck"
+    	android:layout_alignBaseline="@+id/DecInPlaceCheck"
+    	/>
+    <CheckBox
+    	android:id="@+id/DecInPlaceCheck"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:layout_below="@+id/DecryptNameLbl" 
+    	/>	
 </RelativeLayout>
