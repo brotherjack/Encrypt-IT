@@ -72,6 +72,18 @@ public class DecryptFileActivity extends Activity {
 		encryptionSelect.setAdapter(spinnerAdapter);
 
 		mDecryptThis = this;
+		
+		inPlace.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View encryptView) {
+				if(inPlace.isChecked()){
+					mDecryptNameEdit.setEnabled(false);
+				} else {
+					mDecryptNameEdit.setEnabled(true);
+				}
+			}
+		});
+			
 
 		decryptItButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -81,9 +93,11 @@ public class DecryptFileActivity extends Activity {
 						"User Preferences", 0);
 				String decryptPath = mPreferences.getString("decryptedDir", null);
 
-				String fileName = mFileNameEdit.getEditableText().toString();
 				String outputName = mDecryptNameEdit.getEditableText()
 						.toString();
+				if(outputName.equals("")){
+					outputName = "default";
+				}
 				String encryptionType = encryptionSelect.getSelectedItem()
 						.toString();
 				String keyFileName = mKeyNameEdit.getEditableText().toString();
