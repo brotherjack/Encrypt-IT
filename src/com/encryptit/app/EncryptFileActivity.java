@@ -225,6 +225,8 @@ public class EncryptFileActivity extends Activity {
 					.substring(matcher.start(), matcher.end());
 
 			File fileOut = new File(keyDir + "/" + fileName + ".key");
+			Toast.makeText(this, "Key file saved as \'" + keyDir + "/" + 
+					fileName + ".key" + "\'.", Toast.LENGTH_LONG).show();
 
 			output = new FileOutputStream(fileOut);
 
@@ -280,9 +282,13 @@ public class EncryptFileActivity extends Activity {
 				encryptedName.concat(".enc");
 				
 				fileInPlace.renameTo(new File(encryptedName));
+				
+				Toast.makeText(this, "Encrypted \'" + fileInName + "\'.",
+						Toast.LENGTH_LONG).show();
+			} else{
+				Toast.makeText(this, "Encrypted \'" + fileInName + "\' as " + fileOutName + ".enc.",
+						Toast.LENGTH_LONG).show();
 			}
-			Toast.makeText(this, "Encrypted \'" + fileInName + "\'.",
-					Toast.LENGTH_SHORT).show();
 		} catch (BadPaddingException e) {
 			Log.e(LOG_TAG, e.getMessage());
 		} catch (UnsupportedEncodingException e) {
