@@ -36,7 +36,7 @@ public class EncryptStringActivity extends Activity {
         final EditText stringEdit = (EditText) findViewById(R.id.StringEdit);
         final Spinner encryptionSelect = (Spinner) findViewById(R.id.EncryptSelect);
         Button encryptItButton = (Button) findViewById(R.id.EncryptItButton);
-        final EditText seedEdit = (EditText) findViewById(R.id.seedEdit);
+        //final EditText seedEdit = (EditText) findViewById(R.id.seedEdit);
         
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.EncryptSelectOptions, 
             android.R.layout.simple_spinner_item);
@@ -50,7 +50,7 @@ public class EncryptStringActivity extends Activity {
           public void onClick(View encryptView) {
             String fileName = stringEdit.getEditableText().toString();
             String encryptionType = encryptionSelect.getSelectedItem().toString();
-            String seed = seedEdit.getEditableText().toString();
+            //String seed = seedEdit.getEditableText().toString();
             Cipher encCipher;
             Cipher decCipher;
             try{

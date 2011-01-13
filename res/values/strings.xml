@@ -29,4 +29,7 @@
     <!-- Ask user if they would like to encrypt/decrypt file in place -->
 	<string name="encInPlaceLblTxt">Encrypt file in place</string>
 	<string name="DecInPlaceLblTxt">Decrypt file in place</string>
+	
+	<!-- Menu strings -->
+	<string name="sortFilesLbl">Sort Files</string>
 </resources>

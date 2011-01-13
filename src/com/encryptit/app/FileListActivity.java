@@ -3,7 +3,8 @@ package com.encryptit.app;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.app.ListActivity;
 import android.content.ComponentName;
@@ -13,16 +14,19 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 /**
  * Class that handles the creation of a file list from which the user can select
- * a flash file to load.
+ * a file to load into a corresponding file prompt text viewer.
  * 
  * @author Thomas Adriaan Hellinger
  * 
@@ -173,6 +177,24 @@ public class FileListActivity extends ListActivity {
 																		// list
 
 		this.setTitle(mCurrentDir); // Set title to current branch of path
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.file_view_menu, menu);
+	    return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	    case R.id.sort_items:
+	        return true;
+	    default:
+	        return super.onOptionsItemSelected(item);
+	    }
 	}
 
 	/**
