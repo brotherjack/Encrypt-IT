@@ -45,6 +45,14 @@
 				<category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        
+        <activity android:name="com.encryptit.app.DiscreteTextActivity"
+                  android:label="@string/ReadText">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 		
     </application>
 

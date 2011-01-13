@@ -32,10 +32,11 @@ public class HomeActivity extends Activity {
       firstRunPreferences();
     }
 
-    Button encryptStringButton =
+    final Button encryptStringButton =
         (Button) findViewById(R.id.EncryptStringButton);
-    Button encryptFileButton = (Button) findViewById(R.id.EncryptFileButton);
-    Button decryptFileButton = (Button) findViewById(R.id.DecryptFileButton);
+    final Button encryptFileButton = (Button) findViewById(R.id.EncryptFileButton);
+    final Button decryptFileButton = (Button) findViewById(R.id.DecryptFileButton);
+    final Button readFileButton = (Button) findViewById(R.id.ReadFileButton);
 
     encryptStringButton.setOnClickListener(new OnClickListener() {
       @Override
@@ -63,6 +64,15 @@ public class HomeActivity extends Activity {
         startActivity(decFileIntent);
       }
     });
+    
+    readFileButton.setOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          Intent readFileIntent =
+              new Intent(HomeActivity.this, DiscreteTextActivity.class);
+          startActivity(readFileIntent);
+        }
+      });
   }
 
   public boolean getIsFirstRun() {

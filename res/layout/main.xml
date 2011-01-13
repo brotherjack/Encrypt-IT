@@ -17,5 +17,10 @@
     	android:id="@+id/DecryptFileButton"
     	android:layout_width="fill_parent"
     	android:layout_height="wrap_content"
-    	android:text="@string/DecryptFileButtonText" />			
+    	android:text="@string/DecryptFileButtonText" />
+    <Button
+    	android:id="@+id/ReadFileButton"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:text="@string/ReadFileButtonText" />				
 </LinearLayout>
