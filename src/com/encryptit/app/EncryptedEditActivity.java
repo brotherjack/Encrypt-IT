@@ -1,43 +1,33 @@
-package com.encryptit.util;
+package com.encryptit.app;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
-import com.encryptit.app.EncryptFileActivity;
-import com.encryptit.app.R;
-import com.encryptit.exceptions.FileTooBigException;
-
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.encryptit.app.R;
+import com.encryptit.exceptions.FileTooBigException;
+import com.encryptit.util.KeyTools;
 
 public class EncryptedEditActivity extends Activity {
 	private static final String LOG_TAG = EncryptedEditActivity.class.getName();
@@ -77,8 +67,9 @@ public class EncryptedEditActivity extends Activity {
 		}
 		
 		final EditText notePad = (EditText) findViewById(R.id.NotePad);
+		KeyTools kTool = new KeyTools();
 		
-		loadEncryptedFile(mFileName, mKeyName, notePad);
+		loadEncryptedFile(mFileName, kTool.getKey(mKeyName, LOG_TAG), notePad);
 	}
 
 	private void loadEncryptedFile(String fileInName, SecretKeySpec key, EditText notePad) {
@@ -93,17 +84,15 @@ public class EncryptedEditActivity extends Activity {
 					throw new FileTooBigException("File " + fileInName
 							+ " is too large too decrypt.");
 
-				FileInputStream input = new FileInputStream(fileIn);
+				CipherInputStream input = new CipherInputStream(new FileInputStream(fileIn), decCipher);
 				byte[] encrypted = new byte[(int) fileIn.length()];
 				input.read(encrypted);
 
 				byte[] decrypt = decCipher.doFinal(encrypted);
-
-				FileOutputStream output = new FileOutputStream(new File(outputName));
-				output.write(decrypt);
-
-				Toast.makeText(this, "Decrypted \"" + outputName + "\".",
-						Toast.LENGTH_SHORT).show();
+				String ciphertext = new String(decrypt);
+				
+				notePad.setText(ciphertext);
+				notePad.invalidate();
 			} catch (NoSuchPaddingException e) {
 				Log.e(LOG_TAG, e.getMessage());
 			} catch (NoSuchAlgorithmException e) {
@@ -120,8 +109,8 @@ public class EncryptedEditActivity extends Activity {
 				Log.e(LOG_TAG, e.getMessage());
 			} catch (FileTooBigException e) {
 				Log.e(LOG_TAG, e.getMessage());
-			}
-		}// End loadEncryptedFile
-	}
+			} finally{ }
+		}finally{}
+	}// End loadEncryptedFile
 }
 	

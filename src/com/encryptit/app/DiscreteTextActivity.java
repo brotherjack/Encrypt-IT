@@ -1,6 +1,5 @@
 package com.encryptit.app;
 
-import com.encryptit.util.EncryptedEditActivity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -74,8 +73,8 @@ public class DiscreteTextActivity extends Activity {
 			public void onClick(View encryptView) {
 				Intent encryptEditIntent = new Intent(DiscreteTextActivity.this,
 						EncryptedEditActivity.class);
-				encryptEditIntent.putExtra(NAME_OF_FILE, mFileNameEdit.getEditableText());
-				encryptEditIntent.putExtra(NAME_OF_KEY, mKeyNameEdit.getEditableText());
+				encryptEditIntent.putExtra(NAME_OF_FILE, mFileNameEdit.getText().toString());
+				encryptEditIntent.putExtra(NAME_OF_KEY, mKeyNameEdit.getText().toString());
 				startActivity(encryptEditIntent);
 			}
 		});
