@@ -36,14 +36,6 @@ import com.encryptit.util.KeyTools;
 
 public class DecryptFileActivity extends Activity {
 	private static final String LOG_TAG = EncryptFileActivity.class.getName();
-	private static final int PATH_TO_FILE = 0; // Returning path to file to
-	// decrypt?
-	private static final int PATH_TO_KEY_FILE = 1; // or returning path to key
-	// file?
-	
-	private static final int RETURN_PATH_TO_LOAD = 83;
-	private final String SELECTED_PATH = "selected.path";
-	private final String SELECTED_TYPE = "selected.type";
 
 	private static EditText mFileNameEdit;
 	private static EditText mKeyNameEdit;
@@ -128,8 +120,8 @@ public class DecryptFileActivity extends Activity {
 			public void onClick(View encryptView) {
 				Intent fileViewIntent = new Intent(DecryptFileActivity.this,
 						FileListActivity.class);
-				fileViewIntent.putExtra(SELECTED_TYPE, PATH_TO_FILE);
-				startActivityForResult(fileViewIntent, RETURN_PATH_TO_LOAD);
+				fileViewIntent.putExtra(getString(R.string.SELECTED_TYPE), R.id.path_to_file);
+				startActivityForResult(fileViewIntent, R.id.return_path_to_load);
 			}
 		});
 
@@ -138,27 +130,27 @@ public class DecryptFileActivity extends Activity {
 			public void onClick(View encryptView) {
 				Intent fileViewIntent = new Intent(DecryptFileActivity.this,
 						FileListActivity.class);
-				fileViewIntent.putExtra(SELECTED_TYPE, PATH_TO_KEY_FILE);
-				startActivityForResult(fileViewIntent, RETURN_PATH_TO_LOAD);
+				fileViewIntent.putExtra(getString(R.string.SELECTED_TYPE), R.id.path_to_key_file);
+				startActivityForResult(fileViewIntent, R.id.return_path_to_load);
 			}
 		});
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == RETURN_PATH_TO_LOAD) {
+		if (requestCode == R.id.return_path_to_load) {
 			switch (resultCode) {
 			case (Activity.RESULT_OK): // If path was returned successfully
 				if (resultCode == Activity.RESULT_OK) {
-					if (data.hasExtra(SELECTED_PATH)) {
+					if (data.hasExtra(getString(R.string.SELECTED_PATH))) {
 						Bundle stuff = data.getExtras();
-						String path = stuff.getString(SELECTED_PATH);
-						int type = stuff.getInt(SELECTED_TYPE);
-						if (type == PATH_TO_FILE) {
+						String path = stuff.getString(getString(R.string.SELECTED_PATH));
+						int type = stuff.getInt(getString(R.string.SELECTED_TYPE));
+						if (type == R.id.path_to_file) {
 							mFileNameEdit.setText(path);
 							Log.i(LOG_TAG, "Placed path named \"" + path
 									+ "\" into FileNameEdit, EditText.");
-						} else if (type == PATH_TO_KEY_FILE) {
+						} else if (type == R.id.path_to_key_file) {
 							mKeyNameEdit.setText(path);
 							Log.i(LOG_TAG, "Placed path named \"" + path
 									+ "\" into KeyNameEdit, EditText.");

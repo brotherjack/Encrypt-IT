@@ -1,43 +1,35 @@
 package com.encryptit.app;
 
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
-import javax.crypto.CipherOutputStream;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.encryptit.app.R;
 import com.encryptit.exceptions.FileTooBigException;
 import com.encryptit.util.KeyTools;
 
 public class EncryptedEditActivity extends Activity {
 	private static final String LOG_TAG = EncryptedEditActivity.class.getName();
-	private static SharedPreferences mPreferences;
 	
 	private static String mFileName = null;
 	private static String mKeyName = null;
-	
-	private final String NAME_OF_FILE = "name.file"; //Name of file to be sent to EncryptedEdit
-	private final String NAME_OF_KEY = "name.key"; //Name of key to be sent to EncryptedEdit
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -47,10 +39,10 @@ public class EncryptedEditActivity extends Activity {
 		
 		//Get file name and key file name from DiscreteEditText
 		Intent startThis = this.getIntent();
-		if(startThis.hasExtra(NAME_OF_FILE)){
-			mFileName = startThis.getStringExtra(NAME_OF_FILE);
-			if(startThis.hasExtra(NAME_OF_KEY)){
-				mKeyName = startThis.getStringExtra(NAME_OF_KEY);
+		if(startThis.hasExtra(getString(R.string.NAME_OF_FILE))){
+			mFileName = startThis.getStringExtra(getString(R.string.NAME_OF_FILE));
+			if(startThis.hasExtra(getString(R.string.NAME_OF_KEY))){
+				mKeyName = startThis.getStringExtra(getString(R.string.NAME_OF_KEY));
 			}  else{
 				String errorMsg = "EncryptEditActivity has not recieved the name of the file to be edited from "
 					+ "DiscreteTextActivity.";
@@ -65,11 +57,21 @@ public class EncryptedEditActivity extends Activity {
 			Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
 			this.finish();
 		}
-		
+		//Initialize Widgets
 		final EditText notePad = (EditText) findViewById(R.id.NotePad);
-		KeyTools kTool = new KeyTools();
+		final Button saveButton = (Button) findViewById(R.id.SaveButton);
+		final Button discardButton = (Button) findViewById(R.id.DiscardButton);
 		
+		//Initialize key tools, decrypt text of encrypted file for view/edit
+		KeyTools kTool = new KeyTools();
 		loadEncryptedFile(mFileName, kTool.getKey(mKeyName, LOG_TAG), notePad);
+		
+		saveButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View encryptView) {
+				
+			}
+		});
 	}
 
 	private void loadEncryptedFile(String fileInName, SecretKeySpec key, EditText notePad) {

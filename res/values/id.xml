@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<item type="id"
+		  name="null_return" />
+		  
+	<!-- For the return of file names for FileListActivity -->
+	<item type="id" 
+		  name="return_path_to_load"/> <!-- To indicate intention from returning activity  -->
+	<item type="id"
+		  name="path_to_key_file" /> <!-- Indicates returned path is to key -->
+	<item type="id"
+		  name="path_to_file" /> <!-- Indicates returned path is to file to encrypt/decrypt -->	   	  
+</resources>

@@ -38,17 +38,11 @@ public class FileListActivity extends ListActivity {
 	private static String mCurrentDir; // Directory we are currently at
 	private static ListActivity mFileListAct; // This activity
 
-	private static final int NULL_RETURN = -1;
-	private static final int PATH_TO_FILE = 0; // Returning path to file to
-	// decrypt?
-
 	private static final String PHONE_ROOT = Environment
 			.getExternalStorageDirectory().toString();
 	private final String LOG_TAG = FileListActivity.class.getName();
-	private final String SELECTED_PATH = "selected.path";
-	private final String SELECTED_TYPE = "selected.type";
 
-	private static int mReturnType = NULL_RETURN;
+	private static int mReturnType = R.id.null_return;
 	private static SharedPreferences mPreferences = null;
 
 	/**
@@ -61,12 +55,12 @@ public class FileListActivity extends ListActivity {
 
 		// If this is called by DecryptFileActivity, find out whether
 		// program is to return path to file to decrypt or key to do it with
-		if (this.getIntent().hasExtra(SELECTED_TYPE)) {
+		if (this.getIntent().hasExtra(getString(R.string.SELECTED_TYPE))) {
 			// Default is "path to file" if not specified, but should have an
 			// extra
 			// value.
-			mReturnType = this.getIntent().getIntExtra(SELECTED_TYPE,
-					PATH_TO_FILE);
+			mReturnType = this.getIntent().getIntExtra(getString(R.string.SELECTED_TYPE),
+					R.id.path_to_file);
 		}
 
 		Context thisActContext = this.getApplicationContext();
@@ -141,10 +135,10 @@ public class FileListActivity extends ListActivity {
 
 				} else {
 					Bundle fileNameBundle = new Bundle();
-					fileNameBundle.putString(SELECTED_PATH, mCurrentDir + "/"
+					fileNameBundle.putString(getString(R.string.SELECTED_PATH), mCurrentDir + "/"
 							+ mSelected);
-					if (mReturnType != NULL_RETURN) {
-						fileNameBundle.putInt(SELECTED_TYPE, mReturnType);
+					if (mReturnType != R.id.null_return) {
+						fileNameBundle.putInt(getString(R.string.SELECTED_TYPE), mReturnType);
 					}
 
 					// Return path to calling activity for file to be be

@@ -40,8 +40,6 @@ import com.encryptit.util.KeyTools;
 public class EncryptFileActivity extends Activity {
 	private static final String LOG_TAG = EncryptFileActivity.class.getName();
 	private static SharedPreferences mPreferences;
-	private static final int RETURN_PATH_TO_LOAD = 83;
-	private final String SELECTED_PATH = "selected.path";
 	private static Button mBrowseButton;
 	private static EditText mFileNameEdit;
 
@@ -67,6 +65,11 @@ public class EncryptFileActivity extends Activity {
 
 		final Context encryptFileActivity = this;
 
+		//If called from EncryptedEditActivity, automatically insert file to be re-encrypted
+		//if(this.getIntent().hasExtra(name)){
+		//TODO this	
+		//}
+		
 		encryptItButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View encryptView) {
@@ -149,20 +152,20 @@ public class EncryptFileActivity extends Activity {
 			public void onClick(View encryptView) {
 				Intent fileViewIntent = new Intent(EncryptFileActivity.this,
 						FileListActivity.class);
-				startActivityForResult(fileViewIntent, RETURN_PATH_TO_LOAD);
+				startActivityForResult(fileViewIntent, R.id.return_path_to_load);
 			}
 		});
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == RETURN_PATH_TO_LOAD) {
+		if (requestCode == R.id.return_path_to_load) {
 			switch (resultCode) {
 			case (Activity.RESULT_OK): // If path was returned successfully
 				if (resultCode == Activity.RESULT_OK) {
-					if (data.hasExtra(SELECTED_PATH)) {
+					if (data.hasExtra(getString(R.string.SELECTED_PATH))) {
 						Bundle stuff = data.getExtras();
-						String path = stuff.getString(SELECTED_PATH);
+						String path = stuff.getString(getString(R.string.SELECTED_PATH));
 						mFileNameEdit.setText(path);
 						Log.i(LOG_TAG, "Placed path named \"" + path
 								+ "\" into FileNameEdit, EditText.");
