@@ -34,6 +34,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.encryptit.exceptions.FileTooBigException;
+import com.encryptit.exceptions.KeyGenFailException;
+
 public class EncryptFileActivity extends Activity {
 	private static final String LOG_TAG = EncryptFileActivity.class.getName();
 	private static SharedPreferences mPreferences;
@@ -326,26 +329,4 @@ public class EncryptFileActivity extends Activity {
 				}
 		}
 	}// End encryptFile
-
-	private class FileTooBigException extends Exception {
-		static final long serialVersionUID = 1877;
-
-		FileTooBigException(String msg) {
-			super(msg);
-		}
-	}
-
-	private static class KeyGenFailException extends Exception {
-		static final long serialVersionUID = 1878;
-
-		public enum failureTypes {
-			KEY_NULL, DATABASE_ERROR, EMPTY_FIELD
-		}
-
-		private failureTypes fail;
-
-		KeyGenFailException(failureTypes failureType) {
-			fail = failureType;
-		}
-	}
 }

@@ -25,6 +25,9 @@ public class DiscreteTextActivity extends Activity {
 	private final String SELECTED_PATH = "selected.path";
 	private final String SELECTED_TYPE = "selected.type";
 	
+	private final String NAME_OF_FILE = "name.file"; //Name of file to be sent to EncryptedEdit
+	private final String NAME_OF_KEY = "name.key"; //Name of key to be sent to EncryptedEdit
+	
 	private static EditText mFileNameEdit;
 	private static EditText mKeyNameEdit;
 	private static Activity mDiscreteThis;
@@ -61,6 +64,17 @@ public class DiscreteTextActivity extends Activity {
 						FileListActivity.class);
 				fileViewIntent.putExtra(SELECTED_TYPE, PATH_TO_KEY_FILE);
 				startActivityForResult(fileViewIntent, RETURN_PATH_TO_LOAD);
+			}
+		});
+		
+		readItButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View encryptView) {
+				Intent encryptEditIntent = new Intent(DiscreteTextActivity.this,
+						EncryptedEditActivity.class);
+				encryptEditIntent.putExtra(NAME_OF_FILE, mFileNameEdit.getEditableText());
+				encryptEditIntent.putExtra(NAME_OF_KEY, mKeyNameEdit.getEditableText());
+				startActivity(encryptEditIntent);
 			}
 		});
 

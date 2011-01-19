@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+	<EditText android:id="@+id/NotePad"
+	 	android:layout_width="match_parent"
+    	android:minHeight="300dp"
+    	android:layout_height="400dp"
+    	android:maxHeight="500dp"
+    	android:cursorVisible="true"  
+    	/>
+    <Button android:id="@+id/SaveButton"
+    	android:layout_height="wrap_content"
+    	android:layout_width="wrap_content" 	
+    	android:layout_below="@+id/NotePad"
+    	android:text="Save"/>
+    <Button android:id="@+id/DiscardButton"
+    	android:layout_height="wrap_content"
+    	android:layout_width="wrap_content"
+    	android:layout_below="@+id/NotePad"
+    	android:layout_toRightOf="@+id/SaveButton"
+    	android:text="Discard"/>				
+</RelativeLayout>
