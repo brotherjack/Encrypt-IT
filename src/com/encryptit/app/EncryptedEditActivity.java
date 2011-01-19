@@ -88,8 +88,7 @@ public class EncryptedEditActivity extends Activity {
 				byte[] encrypted = new byte[(int) fileIn.length()];
 				input.read(encrypted);
 
-				byte[] decrypt = decCipher.doFinal(encrypted);
-				String ciphertext = new String(decrypt);
+				String ciphertext = new String(encrypted);
 				
 				notePad.setText(ciphertext);
 				notePad.invalidate();
@@ -98,10 +97,6 @@ public class EncryptedEditActivity extends Activity {
 			} catch (NoSuchAlgorithmException e) {
 				Log.e(LOG_TAG, e.getMessage());
 			} catch (InvalidKeyException e) {
-				Log.e(LOG_TAG, e.getMessage());
-			} catch (IllegalBlockSizeException e) {
-				Log.e(LOG_TAG, e.getMessage());
-			} catch (BadPaddingException e) {
 				Log.e(LOG_TAG, e.getMessage());
 			} catch (FileNotFoundException e) {
 				Log.e(LOG_TAG, e.getMessage());
