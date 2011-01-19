@@ -1,5 +1,7 @@
 package com.encryptit.app;
 
+import com.encryptit.util.EncryptedEditActivity;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;

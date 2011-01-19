@@ -6,9 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,6 +34,8 @@ import android.widget.Toast;
 
 import com.encryptit.exceptions.FileTooBigException;
 import com.encryptit.exceptions.KeyGenFailException;
+
+import com.encryptit.util.KeyTools;
 
 public class EncryptFileActivity extends Activity {
 	private static final String LOG_TAG = EncryptFileActivity.class.getName();
@@ -105,13 +105,15 @@ public class EncryptFileActivity extends Activity {
 					}
 					
 					String keyFileName = keyDir + "/" + fileName;
+					KeyTools kTool = new KeyTools();
 
-					SecretKeySpec key = makeKey(keyFileName, seed);
+					SecretKeySpec key = kTool.makeKey(keyFileName, seed, LOG_TAG);
 					if (key == null)
 						throw new KeyGenFailException(
 								KeyGenFailException.failureTypes.KEY_NULL);
-					else
-						saveKey(key, keyDir, fileName);
+					else{						
+						kTool.saveKey(key, keyDir, fileName, LOG_TAG, encryptFileActivity);
+					}
 
 					encryptFile(fileIn, fileOut, encryptionType, key, isInPlace);
 				} catch (KeyGenFailException e) {
@@ -192,59 +194,6 @@ public class EncryptFileActivity extends Activity {
 			output += String.valueOf((char) nInt);
 		}
 		return output;
-	}
-
-	private SecretKeySpec makeKey(String fileName, String seed) {
-		try {
-			SecureRandom secRand = SecureRandom.getInstance("SHA1PRNG");
-			secRand.setSeed(seed.getBytes("UTF-8"));
-
-			byte[] key = (fileName + secRand.toString()).getBytes("UTF-8");
-			MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
-
-			key = sha1.digest(key);
-			// Reduce key to 128 bytes
-			byte[] shorterKey = new byte[16];
-			for (int i = 0; i < 16; i++)
-				shorterKey[i] = key[i];
-
-			return new SecretKeySpec(shorterKey, "AES");
-		} catch (NoSuchAlgorithmException e) {
-			Log.e(LOG_TAG, e.getMessage());
-		} catch (UnsupportedEncodingException e) {
-			Log.e(LOG_TAG, e.getMessage());
-		}
-		return null;
-	}
-
-	private void saveKey(SecretKeySpec key, String keyDir, String filePath) {
-		FileOutputStream output = null;
-		try {
-			Pattern lastBranch = Pattern.compile("[a-zA-Z0-9-|?*<\":>+.'_ ]*$");
-			Matcher matcher = lastBranch.matcher(filePath);
-			matcher.find();
-
-			String fileName = filePath
-					.substring(matcher.start(), matcher.end());
-
-			File fileOut = new File(keyDir + "/" + fileName + ".key");
-			Toast.makeText(this, "Key file saved as \'" + keyDir + "/" + 
-					fileName + ".key" + "\'.", Toast.LENGTH_LONG).show();
-
-			output = new FileOutputStream(fileOut);
-
-			output.write(key.getEncoded());
-		} catch (IOException e) {
-			Log.e(LOG_TAG, e.getMessage());
-		} finally {
-			if (output != null)
-				try {
-					output.close();
-				} catch (IOException e) {
-					Log.e(LOG_TAG, "Cannot close output stream!");
-					e.printStackTrace();
-				}
-		}
 	}
 
 	private void encryptFile(String fileInName, String fileOutName,

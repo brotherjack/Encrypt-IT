@@ -6,7 +6,7 @@
     <string name="DecryptFile">Decrypt File</string>
     <string name="FileList">Browse for File</string>
     <string name="ReadText">Read an Encrypted File</string>
-    <string name="EncryptedEdit">View & Edit An Encrypted File</string>
+    <string name="EncryptedEdit">Edit An Encrypted File</string>
     
     <!-- Button labels for HomeActivity -->
     <string name="EncryptStringButtonText">Encrypt a string</string>

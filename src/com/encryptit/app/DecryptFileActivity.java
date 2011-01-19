@@ -30,6 +30,10 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.encryptit.exceptions.FileTooBigException;
+import com.encryptit.exceptions.ReadAndWriteFileException;
+import com.encryptit.util.KeyTools;
+
 public class DecryptFileActivity extends Activity {
 	private static final String LOG_TAG = EncryptFileActivity.class.getName();
 	private static final int PATH_TO_FILE = 0; // Returning path to file to
@@ -192,8 +196,9 @@ public class DecryptFileActivity extends Activity {
 			String outputName, String decryptPath, boolean inPlace) {
 		try {
 			Cipher decCipher = Cipher.getInstance(encryptionType);
-			SecretKeySpec key = getKey(mKeyNameEdit.getEditableText()
-					.toString());
+			KeyTools kTool = new KeyTools();
+			SecretKeySpec key = kTool.getKey(mKeyNameEdit.getEditableText()
+					.toString(), LOG_TAG);
 			decCipher.init(Cipher.DECRYPT_MODE, key);
 
 			String filePath = mFileNameEdit.getEditableText().toString();
@@ -239,48 +244,5 @@ public class DecryptFileActivity extends Activity {
 			Log.e(LOG_TAG, e.getMessage());
 		}
 
-	}
-
-	private SecretKeySpec getKey(String fileName) {
-		FileInputStream input = null;
-
-		try {
-			File fileIn = new File(fileName);
-
-			input = new FileInputStream(fileIn);
-
-			byte[] bytes = new byte[(int) fileIn.length()];
-			while (input.read(bytes) != -1) {
-				continue;
-			}
-			return new SecretKeySpec(bytes, "AES");
-		} catch (IOException e) {
-			Log.e(LOG_TAG, e.getMessage());
-		} finally {
-			if (input != null)
-				try {
-					input.close();
-				} catch (IOException e) {
-					Log.e(LOG_TAG, "Cannot close input stream!");
-					e.printStackTrace();
-				}
-		}
-		return null;
-	}
-
-	private class FileTooBigException extends Exception {
-		static final long serialVersionUID = 1877;
-
-		FileTooBigException(String msg) {
-			super(msg);
-		}
-	}
-
-	private class ReadAndWriteFileException extends Exception {
-		static final long serialVersionUID = 1848;
-
-		ReadAndWriteFileException(String msg) {
-			super(msg);
-		}
 	}
 }
