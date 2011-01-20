@@ -46,4 +46,6 @@
 		<!-- For the passing of file/key names from DiscreteTextActivity to EncryptedEditActivity -->
 	<string name="NAME_OF_FILE">name.file</string>
 	<string name="NAME_OF_KEY">name.key</string>	
+		<!-- For passing of ciphertext file contents from EncryptedEditActivity to EncryptFileActivity -->
+	<string name="CONTENTS_OF_FILE">contents.cipher</string>	
 </resources>

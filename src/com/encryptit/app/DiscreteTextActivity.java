@@ -3,36 +3,20 @@ package com.encryptit.app;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 public class DiscreteTextActivity extends Activity {
 	private static final String LOG_TAG = DiscreteTextActivity.class.getName();
-	private static final int PATH_TO_FILE = 0; // Returning path to file to
-	// decrypt?
-	private static final int PATH_TO_KEY_FILE = 1; // or returning path to key
-	// file?
-	
-	private static final int RETURN_PATH_TO_LOAD = 83;
-	private final String SELECTED_PATH = "selected.path";
-	private final String SELECTED_TYPE = "selected.type";
-	
-	private final String NAME_OF_FILE = "name.file"; //Name of file to be sent to EncryptedEdit
-	private final String NAME_OF_KEY = "name.key"; //Name of key to be sent to EncryptedEdit
 	
 	private static EditText mFileNameEdit;
 	private static EditText mKeyNameEdit;
 	private static Activity mDiscreteThis;
-	private static SharedPreferences mPreferences;
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -53,8 +37,8 @@ public class DiscreteTextActivity extends Activity {
 			public void onClick(View encryptView) {
 				Intent fileViewIntent = new Intent(DiscreteTextActivity.this,
 						FileListActivity.class);
-				fileViewIntent.putExtra(SELECTED_TYPE, PATH_TO_FILE);
-				startActivityForResult(fileViewIntent, RETURN_PATH_TO_LOAD);
+				fileViewIntent.putExtra(getString(R.string.SELECTED_TYPE), R.id.path_to_file);
+				startActivityForResult(fileViewIntent, R.id.return_path_to_load);
 			}
 		});
 
@@ -63,8 +47,8 @@ public class DiscreteTextActivity extends Activity {
 			public void onClick(View encryptView) {
 				Intent fileViewIntent = new Intent(DiscreteTextActivity.this,
 						FileListActivity.class);
-				fileViewIntent.putExtra(SELECTED_TYPE, PATH_TO_KEY_FILE);
-				startActivityForResult(fileViewIntent, RETURN_PATH_TO_LOAD);
+				fileViewIntent.putExtra(getString(R.string.SELECTED_TYPE), R.id.path_to_key_file);
+				startActivityForResult(fileViewIntent, R.id.return_path_to_load);
 			}
 		});
 		
@@ -73,8 +57,8 @@ public class DiscreteTextActivity extends Activity {
 			public void onClick(View encryptView) {
 				Intent encryptEditIntent = new Intent(DiscreteTextActivity.this,
 						EncryptedEditActivity.class);
-				encryptEditIntent.putExtra(NAME_OF_FILE, mFileNameEdit.getText().toString());
-				encryptEditIntent.putExtra(NAME_OF_KEY, mKeyNameEdit.getText().toString());
+				encryptEditIntent.putExtra(getString(R.string.NAME_OF_FILE), mFileNameEdit.getText().toString());
+				encryptEditIntent.putExtra(getString(R.string.NAME_OF_KEY), mKeyNameEdit.getText().toString());
 				startActivity(encryptEditIntent);
 			}
 		});
@@ -83,19 +67,19 @@ public class DiscreteTextActivity extends Activity {
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == RETURN_PATH_TO_LOAD) {
+		if (requestCode == R.id.return_path_to_load) {
 			switch (resultCode) {
 			case (Activity.RESULT_OK): // If path was returned successfully
 				if (resultCode == Activity.RESULT_OK) {
-					if (data.hasExtra(SELECTED_PATH)) {
+					if (data.hasExtra(getString(R.string.SELECTED_PATH))) {
 						Bundle stuff = data.getExtras();
-						String path = stuff.getString(SELECTED_PATH);
-						int type = stuff.getInt(SELECTED_TYPE);
-						if (type == PATH_TO_FILE) {
+						String path = stuff.getString(getString(R.string.SELECTED_PATH));
+						int type = stuff.getInt(getString(R.string.SELECTED_TYPE));
+						if (type == R.id.path_to_file) {
 							mFileNameEdit.setText(path);
 							Log.i(LOG_TAG, "Placed path named \"" + path
 									+ "\" into FileNameEdit, EditText.");
-						} else if (type == PATH_TO_KEY_FILE) {
+						} else if (type == R.id.path_to_key_file) {
 							mKeyNameEdit.setText(path);
 							Log.i(LOG_TAG, "Placed path named \"" + path
 									+ "\" into KeyNameEdit, EditText.");
@@ -111,28 +95,6 @@ public class DiscreteTextActivity extends Activity {
 				}
 				break;
 			}
-		}
-	}
-
-	private class FileTooBigException extends Exception {
-		static final long serialVersionUID = 1877;
-
-		FileTooBigException(String msg) {
-			super(msg);
-		}
-	}
-
-	private static class KeyGenFailException extends Exception {
-		static final long serialVersionUID = 1878;
-
-		public enum failureTypes {
-			KEY_NULL, DATABASE_ERROR, EMPTY_FIELD
-		}
-
-		private failureTypes fail;
-
-		KeyGenFailException(failureTypes failureType) {
-			fail = failureType;
 		}
 	}
 }

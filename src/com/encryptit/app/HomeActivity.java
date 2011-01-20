@@ -15,21 +15,22 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
+import com.encryptit.util.PreferenceTools;
+
 public class HomeActivity extends Activity {
   private static final String LOG_TAG = HomeActivity.class.getName();
-  private static SharedPreferences mPreferences = null;
-  private static final String AUTHORITY =
-      Environment.getExternalStorageDirectory().toString() + "/Encrypt-IT/";
 
   /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
-
-    if (mPreferences == null) {
+    
+    PreferenceTools pTools = new PreferenceTools(this.getApplicationContext());
+    
+    if (pTools.getIsFirstRun()) {
       Log.i(LOG_TAG, "First Run: Setting up preferences for phone.");
-      firstRunPreferences();
+      pTools.firstRunPreferences();
     }
 
     final Button encryptStringButton =
@@ -74,7 +75,7 @@ public class HomeActivity extends Activity {
         }
       });
   }
-
+  /*
   public boolean getIsFirstRun() {
     return mPreferences.getBoolean("firstRun", true);
   }
@@ -116,5 +117,5 @@ public class HomeActivity extends Activity {
     edit.commit();
 
     setRanForFirstTime();
-  }
+  }*/
 }
