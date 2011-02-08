@@ -89,13 +89,13 @@ public class EncryptedEditActivity extends Activity {
 
 				// A character in java is two bytes, so this will be a string between 10
 				// and 50 characters long
-				int stringSize = 10 + gen.nextInt(50) * 2;
+				int stringSize = 10 + gen.nextInt(15) * 2;
 
 				gen.setSeed(System.currentTimeMillis()); // Set to new seed
 				String seed = "";
 				int nInt = 0;
 				for (int i = 0; i < stringSize; i++) {
-					nInt = gen.nextInt(75) + 48;					
+					nInt = gen.nextInt(75) + 48;
 					seed += String.valueOf((char) nInt);
 				}
 				PreferenceTools pTools = new PreferenceTools(thisCon);

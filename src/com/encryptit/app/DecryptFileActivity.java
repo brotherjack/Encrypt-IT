@@ -35,7 +35,7 @@ import com.encryptit.exceptions.ReadAndWriteFileException;
 import com.encryptit.util.KeyTools;
 
 public class DecryptFileActivity extends Activity {
-	private static final String LOG_TAG = EncryptFileActivity.class.getName();
+	private static final String LOG_TAG = DecryptFileActivity.class.getName();
 
 	private static EditText mFileNameEdit;
 	private static EditText mKeyNameEdit;
