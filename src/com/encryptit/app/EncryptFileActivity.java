@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,7 +34,6 @@ import android.widget.Toast;
 
 import com.encryptit.exceptions.FileTooBigException;
 import com.encryptit.exceptions.KeyGenFailException;
-
 import com.encryptit.util.KeyTools;
 
 public class EncryptFileActivity extends Activity {
@@ -160,8 +158,10 @@ public class EncryptFileActivity extends Activity {
 			else{						
 				kTool.saveKey(key, keyDir, fileName, LOG_TAG, enccon);
 			}
-
-			encryptFile(fileIn, fileOut, encryptionType, key, isInPlace, enccon);
+			
+			//if(!encact.getComponentName().getClassName().equals(EncryptedEditActivity.class)){
+				encryptFile(fileIn, fileOut, encryptionType, key, isInPlace, enccon);
+			//}
 		} catch (KeyGenFailException e) {
 			String msg = null;
 			if (e.fail == KeyGenFailException.failureTypes.KEY_NULL) {

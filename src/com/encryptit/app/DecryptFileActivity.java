@@ -189,12 +189,13 @@ public class DecryptFileActivity extends Activity {
 			String outputName, String decryptPath, boolean inPlace) {
 		try {
 			Cipher decCipher = null;
-			try {
+			decCipher = Cipher.getInstance(encryptionType);
+			/*try {
 				decCipher = Cipher.getInstance("AES/CTR/NoPadding", encryptionType);
 			} catch (NoSuchProviderException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 			KeyTools kTool = new KeyTools();
 			SecretKeySpec key = kTool.getKey(mKeyNameEdit.getEditableText()
 					.toString(), LOG_TAG);
