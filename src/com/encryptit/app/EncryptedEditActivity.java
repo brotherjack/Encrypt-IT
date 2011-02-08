@@ -100,7 +100,8 @@ public class EncryptedEditActivity extends Activity {
 				}
 				PreferenceTools pTools = new PreferenceTools(thisCon);
 				SecretKeySpec key = EncryptFileActivity.matchKeyToFile(mFileName, "AES", seed, true, pTools.getSharedPref(), thisAct, thisCon);
-				EncryptFileActivity.encryptFile(mFileName, mFileName, "AES", key, true, thisCon);
+				//EncryptFileActivity.encryptFile(mFileName, mFileName, "AES", key, true, thisCon);
+				saveEncryptedFile(mFileName, key, notePad);
 			}
 		});
 	}

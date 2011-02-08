@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -187,7 +188,13 @@ public class DecryptFileActivity extends Activity {
 	private void DecryptFile(String encryptionType, String keyFileName, 
 			String outputName, String decryptPath, boolean inPlace) {
 		try {
-			Cipher decCipher = Cipher.getInstance(encryptionType);
+			Cipher decCipher = null;
+			try {
+				decCipher = Cipher.getInstance("AES/CTR/NoPadding", encryptionType);
+			} catch (NoSuchProviderException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			KeyTools kTool = new KeyTools();
 			SecretKeySpec key = kTool.getKey(mKeyNameEdit.getEditableText()
 					.toString(), LOG_TAG);
